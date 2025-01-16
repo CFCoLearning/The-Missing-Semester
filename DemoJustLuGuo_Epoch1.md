@@ -398,5 +398,50 @@ shimarin@WINPC-906291016:~$ logout
 Connection to 192.168.1.5 closed.
 ```
 
+### 01.16
+
+#### 学习时长：1小时
+
+学习了git的使用
+
+简单来说，在git中文件被称作 Blob 对象（数据对象），也就是一组数据。目录则被称之为“树”，它将名字与 Blob 对象或树对象进行映射，快照则是被追踪的最顶层的树。
+一个树看起来可能是这样的：
+
+```
+<root> (tree)  #这是一个快照
+|
++- foo (tree)
+|  |
+|  + bar.txt (blob, contents = "hello world")  #名为foo的树包含了一个文件（对象）bar.txt
+|
++- baz.txt (blob, contents = "git is wonderful")  #这个文件是直接指向快照的
+```
+
+git中的提交是不可改变的。但这并不代表错误不能被修改，只不过这种“修改”实际上是创建了一个全新的提交记录。而引用则被更新为指向这些新的提交。
+
+git还包括一个暂存区，在编辑快照时，改动会存在此区中，允许指定下次快照中要包括哪些改动。
+
+git的命令行：（只列了一些自己应该会常用的）
+- git init: 创建一个新的 git 仓库，其数据会存放在一个名为 .git 的目录下
+- git status: 显示当前的仓库状态
+- git add <filename>: 添加文件到暂存区
+- git commit: 创建一个新的提交
+- git diff <filename>: 显示与暂存区文件的差异
+- git checkout <revision>: 更新 HEAD 和目前的分支
+- git branch: 显示分支
+- git merge <revision>: 合并到当前分支
+- git mergetool: 使用工具来处理合并冲突
+- git remote add <name> <url>: 添加一个远端
+- git push <remote> <local branch>:<remote branch>: 将对象传送至远端并更新远端引用
+- git fetch: 从远端获取对象/索引
+- git pull: 相当于 git fetch; git merge
+- git clone: 从远端下载仓库
+- git checkout -- <file>: 丢弃修改
+- git commit --amend: 编辑提交的内容或信息
+- git reset HEAD <file>: 恢复暂存的文件
+
+本节课主要注重于理解git的设计以让我们更好地使用它，在上这节课之前我就已经开始使用了，所以听起来并不感觉有什么不理解的地方。将这节课的内容放到共学项目上的报名步骤就很好理解了，首先要报名的人fork主仓库，将报名信息合并到主仓库，等待报名成功后每天将学习日志直接提交到主仓库，这里每日的提交就相当于创建了一个新快照。当然以防万一你也可以先提交到自己分支的仓库，确保OK后再合并到主仓库。
+
+今天就先看到这里，主要是感觉重理解的课程确实没啥好写的。 ~~（开始看我的爆炸梦之颂乐人偶）~~
 
 <!-- Content_END -->

@@ -740,6 +740,64 @@ SHHis@AmberHeart:~# baibai 疯狂星期四阿贝母鸡卡
 今天就学到这里，疯狂星期四阿贝母鸡卡向各位告辞，各位下次再见捏~
 ```
 
+### 01.17
+#### 学习时长：70min
+远程执行服务器 ssh<br><br>
 
+有关于sed的正则表达式<br><br>
 
+捕获组,指定特殊值并重复使用<br><br>
+
+sort | uniq -c 去除排序后重复行 并计数 感觉挺有用<br><br>
+
+学了不少,不如先找个日志练手，诶,刚好脸上就有个杀戮尖塔的运行日志<br><br>
+
+不过好像看不到具体哪个mod引起的闪退,就用sed的正则表达式让他可视化一下<br><br>
+
+来看看哪个基础mod在杀戮尖塔运行过程中是大头<br><br>
+```bash
+SHHis@AmberHeart:~# cat SlayTheSpire.log
+...#省略上万条
+12:19:10.470 INFO helpers.FileSaver> Save thread will die now.
+12:19:10.470 INFO core.CardCrawlGame> Shutting down publisher integrations...
+12:19:10.473 INFO steam.SteamTicker> [ERROR] SteamAPI stopped running.
+12:19:10.476 INFO core.CardCrawlGame> Flushing logs to disk. Clean shutdown successful.
+
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/'
+#先提取一下具体出现的基础mod
+...
+spireTogether.SpireTogetherMod
+spireTogether.SpireTogetherMod
+spireTogether.SpireTogetherMod
+core.CardCrawlGame
+core.CardCrawlGame
+core.CardCrawlGame
+core.CardCrawlGame
+helpers.FileSaver
+helpers.FileSaver
+core.CardCrawlGame
+steam.SteamTicker
+core.CardCrawlGame
+#大致是提取出来了 虽然有不少乱七八糟的就当没看见吧（
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/' | sort | uniq -c
+#进行一个序的排
+...
+      2 steamInput.SteamInputDetect
+      1 steamInput.SteamInputHelper
+      1 ststwitch.TwitchConfig
+     23 togawasakikomod
+    476 unlock.UnlockTracker
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/' | sort | uniq -c | sort -nk1,1 | tail -n10
+#然后把里面最大头的提取一下
+    163 helpers.TipHelper����
+    242 helpers.TipHelper��ҫ
+    304 dungeons.AbstractDungeon
+    312 ActLikeIt
+    336 helpers.AsyncSaver
+    442 helpers.FileSaver
+    476 unlock.UnlockTracker
+    880 helpers.File
+   3454 basemod.BaseMod
+   4027 spireTogether.SpireTogetherMod
+```
 <!-- Content_END -->

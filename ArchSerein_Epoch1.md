@@ -206,4 +206,30 @@ struct buf {
 
 > OoO 主要介绍的是指令的调度和寄存器的重命名。第一种方案是每个 unit 会有一个 reservation table 记录使用的数据的来源, 每一个条目有一个别名, 会将这个别名记录到 registers alias table 中作为寄存器的别名并将寄存器的 valid 位置为 0表示这个寄存器的值在后续的 cycle 中由 producer 写入, 所有和这个寄存器有关的 consumer 都会被 stall。在 producer 完成该条指令后会通过总线进行广播，会更新每个 unit 和 registers alias table 中和这个寄存器相关的条目，如果该条目更新后，需要的源数据都准备好后就会有调度器决定是否进入后续的流水线。关于每个 unit 中的数据什么时候 retire，我还不是很清楚。由于通过总线广播生产的数据时会在很多个 table 中复制，为了减少这种消耗，后来简化成了类似指针的结构，分为前端的寄存器和与 arch 状态相关的物理寄存器，前端的寄存器在 renaming 后会有一个 index 指向实际使用的物理寄存器，以这种方式减少数据的复制。对于 commit 的指令不会立刻 retire，而是保存在 rob 中，保证顺序发射，乱许执行，顺序提交，用以实现精确异常。后面还补充了关于内存类似的步骤，不过由于内存的地址空间是非常大的，难以使用 renaming。
 
+### 01.17
+
+> 今日学习时长
+
+> 5h
+
+> 今日学习任务
+
+> 实现 xip 取指方式，程序可以跳转到 flash 空间执行
+
+> 学习内容小结
+
+> 要在硬件层次实现 flash_read() 的功能, 也就是要按照一定的顺序在硬件上访问SPI master的寄存器. 需要用状态机实现 flash_read() 的功能! 与上文从flash中加载程序并执行的方式不同, 这种从flash颗粒中取指的方式并不需要在执行程序之前将程序读入到内存(对应上文的SRAM)中, 因此也称"就地执行"(XIP, eXecute In Place)方式。ysyxSOC 把 spi master 的地址空间和 flash 的地址空间都映射到了 apb 端口, 即是说在实现 xip 取指令的同时需要区分访问的是 spi 还是 flash。
+
+> 讲义给出了如何实现的简单描述: 
+
+1. 检查APB请求的目标地址, 若目标地址落在SPI master的地址空间, 则正常访问并回复
+2. 若目标地址落在flash存储空间, 则进入XIP模式. 在XIP模式中, SPI master的输入信号由相应状态机决定
+3. 状态机依次往SPI master的设备寄存器中写入相应的值, 写入的值与flash_read()基本一致
+4. 状态机轮询SPI master的完成标志, 等待SPI master完成数据传输
+5. 状态机从SPI master的RX寄存器中读出flash返回的数据, 处理后通过APB返回, 并退出XIP模式
+
+> 因此我根据 flash_read 的软件实现设置了7个状态分别用来表示 xip空闲, 写 CMD, 写 DIV，写CTRL，选择 slave，循环读取 CTRL 中的完成标志位，读取 RX 寄存器中的值，禁用 slave(感觉不是必须)
+
+> 读取出的数据是字节倒序的需要 invert_endian
+
 <!-- Content_END -->

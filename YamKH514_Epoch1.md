@@ -352,4 +352,33 @@ alias ll="ls -lh"
     scp path/to/local_file remote_host:path/to/remote_file
     ```
 
+### 01.18
+
+Duration of study: 30min \
+What did I learn today: Debugging and Profiling
+
+**Debugging**
+
+> “The most effective debugging tool is still careful thought, coupled with judiciously placed print statements” — Brian Kernighan, Unix for Beginners.
+
+- Printing and Logging
+- Using debuggers, like [cgdb](https://cgdb.github.io/)
+
+**Profiling**
+
+- Using Timing
+- Using Profilers
+    - CPU profilers
+        Using `cProfile` in python
+    - Memory leak analysis
+        We can use Valgrind that help us identify memory leaks
+    - Resource Monitoring: \
+        **General Monitoring**: `htop` \
+        **IO operations**: `iotop` \
+        **Disk Usage**: `df` \
+        **Memory Usage**: `free` \
+        **Open Files**: `lsof` \
+        **Network Connections and Config**: `ss` \
+        **Network Usage**: `nethogs` and `iftop`
+
 <!-- Content_END -->

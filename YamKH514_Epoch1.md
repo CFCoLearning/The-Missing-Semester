@@ -331,4 +331,25 @@ What did I learn today: Command-line Environment
 
 [A Quick and Easy Guide to tmux](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/)
 
+### 01.17
+
+Duration of study: 30min \
+What did I learn today: Command-line Environment
+
+**Aliases** \
+Using `alias` command to config aliases, like:
+```bash
+alias ll="ls -lh"
+```
+
+**Copying files over SSH** \
+- Using `ssh+tee` commands.
+    ```bash
+    cat localfile | ssh remote_server tee serverfile
+    ```
+- Using `scp` command to copy large amounts of files/directories.
+    ```bash
+    scp path/to/local_file remote_host:path/to/remote_file
+    ```
+
 <!-- Content_END -->

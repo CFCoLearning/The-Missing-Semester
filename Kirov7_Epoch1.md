@@ -149,4 +149,59 @@ Model 是 LangChain 的核心组件，但是 LangChain 本身不提供自己的 
     1. 性能相比其他模式相对较差，需要额外的 Embedding + 向量数据库支持。
     2. 记忆效果受检索功能的影响，好的非常好，差的非常差。
 
+### 1.18
+#### LangChain Memory组件
+Memory 组件的基类是 `BaseMemory`，封装了大量的基础方法，例如：`memory_variables`、`load_memory_variables`、`aload_memory_variables`、`save_context`、`asave_context`、`clear`、`aclear` 函数。
+
+基于 `BaseMemory` 基类，衍生出了两个子类 `SimpleMemory` 和 `BaseChatMemory`，当 LLM 应用不需要记忆功能，又不想更换代码结构时，可以将记忆组件使用 `SimpleMemory` 组件进行代替，`SimpleMemory` 实现了记忆组件的相关方法，但是不存储任何记忆，可以在不修改代码结构的情况下替换记忆组件，实现无记忆功能。
+
+而 `BaseChatMemory` 组件是 LangChain 中内置的其他记忆组件的基类，针对对话历史进行了特定的封装，以适用聊天模型对话的场合。
+
+LangChain 记忆组件的流程图如下：
+![Memory](https://heap.crazyfay.com/uploads/1737202701.jpg)
+
+在 LangChain 的 `BaseChatMemory` 组件中，不同的属性与方法有不同的作用：
+
+- **chat_memory**：用于管理记忆中的历史消息对话。
+- **output_key**：定义 AI 内容输出键。
+- **input_key**：定义 Human 内容输入键。
+- **return_messages**：`load_memory_variables` 函数是否返回消息列表，默认为 False 代表返回字符串。
+- **save_context**：存储上下文到记忆组件中（存储消息对话）。
+- **load_memory_variables**：生成加载到链的记忆字典信息。
+- **clear**：清除记忆中的对话消息历史。
+在聊天机器人的运行流程中，添加 `BaseChatMemory` 组件后，整体流程变化如下：
+![Memory](https://heap.crazyfay.com/uploads/1737202843.jpg)
+
+##### 缓冲记忆组件
+缓冲记忆组件是 LangChain 中最简单的记忆组件，绝大部分都不对数据结构和提取算法做任何处理，就是简单的原进原出，也是使用频率最高的记忆组件，在 LangChain 中封装了几种内置的缓冲记忆组件，涵盖：
+
+1. **ConversationBufferMemory**：缓冲记忆，最简单，最数据结构和提取算法不做任何处理，将所有对话信息全部存储作为记忆。
+![Memory](https://heap.crazyfay.com/uploads/1737203295.jpg)
+
+2. **ConversationBufferWindowMemory**：缓冲窗口记忆，通过设定 k 值，只保留一定数量（2*k）的对话信息作为历史。
+![Memory](https://heap.crazyfay.com/uploads/1737203324.jpg)
+
+3. **ConversationTokenBufferMemory**：令牌缓冲记忆，通过设置最大标记数量（max_token_limits）来决定何时清除交互信息，当对话信息超过 max_token_limits时，抛弃旧对话信息。
+![Memory](https://heap.crazyfay.com/uploads/1737203485.jpg)
+
+4. **ConversationStringBufferMemory**：字符串缓冲记忆（早期 LangChain 封装的记忆组件），等同于 缓冲记忆，固定返回字符串。
+![Memory](https://heap.crazyfay.com/uploads/1737203523.jpg)
+
+##### 摘要记忆组件
+在 LangChain 中使用缓冲记忆组件要不就保存所有信息（占用过多容量），要不就保留最近的记忆信息（丢失太多重要信息），那么有没有一种情况是既要又要呢？
+
+所以折中方案就出现了——保留关键信息（重点记忆），移除冗余噪音（流水式信息）。
+
+在 LangChain 中 摘要记忆组件 就是一种折中的方案，内置封装的 摘要记忆组件 有以下几种。
+
+1. **ConversationSummaryMemory**，摘要总结记忆组件，将传递的历史对话记录总结成摘要进行保存（底层使用 LLM 大语言模型进行总结），使用时填充的记忆为 摘要，并非对话数据。这种策略融合了记忆质量和容量的考量，只保留最核心的语义信息，有效减少了冗余，同时质量更高。
+![Memory](https://heap.crazyfay.com/uploads/1737203577.jpg)
+
+2. **ConversationSummaryBufferMemory**，摘要缓冲混合记忆，在不超过 max_token_limit 的限制下，保存对话历史数据，对于超过的部分，进行信息的提取与总结（底层使用 LLM 大语言模型进行总结），兼顾了精确的短期记忆与模糊的长期记忆。
+![Memory](https://heap.crazyfay.com/uploads/1737203638.jpg)
+
+##### 实体记忆组件介绍
+实体记忆指的是跟踪对话中提到的实体，并且在对话中记住关于特定实体的既定事实，它提取关于实体的信息（使用LLM），并随着时间的推移建立对该实体的知识（使用LLM），一般使用实体记忆来存储和查询对话中引用的各种信息，比如人物、地点、事件等。
+
+在 LangChain 内部封装了一个实体记忆类 `ConversationEntityMemory`，这个类可以从对话历史中提取实体并生成描述（简单来讲，就是提取关键词+对应的描述），不过其预设的 Prompt 过于笨重，而且极度消耗 Token，并且对大模型的要求极高，所以实用度并不高。
 <!-- Content_END -->

@@ -160,7 +160,7 @@ echo "Standard Error was saved to $error_file"
 
 Study Time: 2h.
 
-### Note
+#### Note
 
 Today I mainly experienced the use of nvim plugin in VS code.
 
@@ -169,6 +169,22 @@ Vim is a deeply customizable editor with very powerful functions.You don't need 
 > Vim avoids the use of the mouse, because it’s too slow; Vim even avoids using the arrow keys because it requires too much movement.The end result is an editor that can match the speed at which you think.
 
 I have to admit that this is right.Using the mouse to position is waste of time, we can be faster by only use keyboard.However, in actual project development, it is obviously inappropriate to only use vVm for code editing. We still need an IDE to help us complete project development.So I think using Vim through a plugin in VS code to complete a project is a more appropriate solution.This can not only complete project development easier, but also improve our code editing efficiency and experience.
+
+### 01.18
+
+Study Time: 1h
+
+#### Note
+
+Today I mainly learned how to use awk, sed and grep.
+
+Awk is an application for processing text files. Almost all Linux systems come with this program.It processes each line of the file in turn and reads each field in it. For text files with the same format for each line, such as logs and CSV, awk may be the most convenient tool.Awk is not only a tool software, but also a programming language.
+
+Sed is a stream editor. It is a very important tool in text processing and can be used perfectly with regular expressions. When processing, the current line is stored in a temporary buffer, called the "pattern space". Then the sed command is used to process the contents of the buffer. After the processing is completed, the contents of the buffer are sent to the screen. Then the next line is processed, and this is repeated until the end of the file. The file content does not change unless you use redirection storage output. Sed is mainly used to automatically edit one or more files; simplify repeated operations on files; write conversion programs, etc.
+
+grep (global search regular expression (RE) and print out the line) is a powerful text search tool that can use regular expressions to search text and print out matching lines. It is used to filter/search for specific characters. Regular expressions can be used with a variety of commands, making it very flexible to use.
+
+Proficient use of these three tools can meet most data processing needs.
 
 
 

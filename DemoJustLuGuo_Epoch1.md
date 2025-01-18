@@ -444,4 +444,73 @@ git的命令行：（只列了一些自己应该会常用的）
 
 今天就先看到这里，主要是感觉重理解的课程确实没啥好写的。 ~~（开始看我的爆炸梦之颂乐人偶）~~
 
+### 01.17
+
+#### 学习时长：1小时
+
+昨天看了一点网上的教程尝试在局域网搭一个网站，但是折腾了两个小时失败了，就没有写笔记。
+
+今天就继续看调试与性能分析这节的内容，讲的是如何处理代码中的bug和优化代码，前面调试代码改变输出结果的颜色就不多写了，把代码引用过来就行了，试了一下还挺好玩的。
+
+>echo -e "\e[38;2;255;0;0mThis is red\e[0m"  #打印红色的字符串:this is red
+>
+>控制色彩的字符名为ANSI颜色控制码，这个就不多说了，贴个维基的介绍：https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97
+
+还有个是大部分linux的系统日志都会使用`systemd`，这是一个系统守护进程，systemd会将日志存放在/var/log/journal，可以使用`journalctl`命令显示这些信息。之前在讲ssh的时候就用过这个代码，因为系统日志有些长就可以通过`grep`命令将我们需要的信息过滤出来。还有些其他的工具类似于`lnav`也可以很好的展现和浏览日志。
+
+虽然说大部分人在代码遇到问题时都会在发现问题的地方添加打印语句，但是在运行一些大型代码时就会显得难以下手，这时可以使用调试器，课上使用的示例语言是`python`(pdb)，这里是我的实操记录。
+
+
+```bash
+#wsl并没有预装python，这里我们先安装
+sakuraauro@DemoJustLuGuo:~$ python
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+sakuraauro@DemoJustLuGuo:~$ sudo apt install python3 #如果忘了python的安装命令又不想百度或者用apt命令查，可以试着打与其相关的命令，linux会提醒你的（笑）
+sakuraauro@DemoJustLuGuo:~$ python
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3 #安装了之后还是这样，是因为安装的python3插件的命令是python3
+  sakuraauro@DemoJustLuGuo:~$ sudo apt install python-is-python3
+  sakuraauro@DemoJustLuGuo:~$ python
+Python 3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information. #把另外一个叫python-is-python3的插件也装上了，既然能显示出来版本信息了就应该没问题了
+```
+
+---
+写在之后：要使用pdb请安装python-dev-is-python3
+---
+
+```bash
+#这里直接复制了讲义上的python代码，先执行一遍。
+sakuraauro@DemoJustLuGuo:~/TEST$ vim debug.py
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+Traceback (most recent call last):
+  File "/home/sakuraauro/TEST/debug.py", line 11, in <module>
+    print(bubble_sort([4, 2, 1, 8, 7, 6]))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakuraauro/TEST/debug.py", line 6, in bubble_sort
+    if arr[j] > arr[j+1]:
+                ~~~^^^^^
+IndexError: list index out of range   #这里输出的错误出现在6和11行，有个IndexError（索引列表越界）错误，我们使用pdb来修复此代码
+sakuraauro@DemoJustLuGuo:~/TEST$ pdb debug.py
+(省略中间的输出)
+
+IndexError: list index out of range
+Uncaught exception. Entering post mortem debugging
+Running 'cont' or 'step' will restart the program
+> /home/sakuraauro/TEST/debug.py(6)bubble_sort()
+-> if arr[j] > arr[j+1]:  #这里直接执行pdb(c)命令，当程序运行到第6行时便崩溃了
+(Pdb) p arr
+[2, 1, 1, 7, 6, 6]
+(Pdb) p j
+5                     #在程序终止运行的地方打印数组的结果，arr中有2,1,1,7,6,6六个数，j的值是5，代入表达式就是 arr[5] > arr[6] 这里的arr[6]表示数组第七个数，所以这里出现了越界错误
+sakuraauro@DemoJustLuGuo:~/TEST$ vim debug.py
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+[1, 1, 1, 6, 6, 6]    #我们将第五行的range(n)改为range(n-1)后再运行代码就能够输出结果了，此时第六行的执行结果应该是 arr[4] > arr [5] 符合要求。
+```
+
+这章内容有点多，课虽然看完了但是实操还没做完，分两天做吧
+
 <!-- Content_END -->

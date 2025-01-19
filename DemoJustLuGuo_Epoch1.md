@@ -513,4 +513,42 @@ sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
 
 这章内容有点多，课虽然看完了但是实操还没做完，分两天做吧
 
+### 01.19
+#### 学习时间：45分钟
+
+关于web的开发者工具，这在以后应该是要经常要用的东西，在浏览器中按F12即可打开，火狐的开发者工具应该和chrome有点差别，其他的大概没什么特别的了，毕竟大部分浏览器的内核用的都是chromium嘛。
+
+接下来是静态分析的内容，依旧引用的是讲义的内容，py的静态分析工具`pyflakes`依旧需要使用apt命令安装，这个就不多说了。
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+0
+1
+2
+3
+4
+Traceback (most recent call last):
+  File "/home/sakuraauro/TEST/debug.py", line 12, in <module>
+    print(baz)
+          ^^^
+NameError: name 'baz' is not defined. Did you mean: 'bar'?
+```
+我们先直接执行一遍这个代码，错误输出为第12行，但是当我们修改过后，输出仍为0,1,2,3,4,0,2。前面的数并没有按照预期输出42。这里就直接使用pyflakes进行操作。
+
+>sakuraauro@DemoJustLuGuo:~/TEST$ pyflakes3 debug.py
+>
+>debug.py:7:5: redefinition of unused 'foo' from line 4
+
+下面的性能分析与优化内容，我觉得比较有趣的是利用分析器来显示各函数调用所需的时间，还有利用`Valgrind`这个工具检测内存泄漏问题（沟槽的内存泄漏）。其他的话，我觉得还是得自己实战写代码，在真正着手进行优化的时候才能真正学到。
+
+还有资源监控的内容，就过了一遍，但是我在执行`free`命令时发现一些奇怪的东西
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ free -m
+               total        used        free      shared  buff/cache   available
+Mem:            7550         911        5846           3        1043        6638
+Swap:           2048           0        2048
+```
+wsl的内存是与windows共享的吗？既然是共享，那么7550这个总内存是从哪里获得的数据呢，这里空闲内存也与任务管理器的对不上，下面swap压缩内存倒是之前折腾手机的时候在scene上没少见过，不过鉴于我在各个方面都了解一点但都是半罐水的特性，我也分析不出个所以然。
+
+今天疑似交的有点过晚了，下次一定先学习再打电动（心虚）
+
 <!-- Content_END -->

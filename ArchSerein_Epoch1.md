@@ -232,4 +232,19 @@ struct buf {
 
 > 读取出的数据是字节倒序的需要 invert_endian
 
+### 01.19
+
+> 今日学习时长
+
+> 6h
+
+> 今日学习任务
+
+> 在上次实现 xip 后将程序加载到 flash 执行
+
+> 学习内容小结
+
+> 在上次的 xip 实现中，in_xip 状态的更新有错误不应该根据 xip_state 处于 IDLE 状态简单的判断 xip 已经完成了一轮状态的转移，后来发现在 xip 取指令时 penable 是一直处于高电平的，于是就通过 penable 信号判断 xip 是否执行结束。后续需要将 reset_addr 和 linker script 的和 mrom 相关的切换到 flash。然后在改写 linker script 时出现了一个问题: file offset too huge，想了挺久没有想到为什么会导致这个问题的原因，就恢复到 mrom 时的然后简单的替换和修改地址空间。发现之前遗漏了 sdata 和 srodata 这两个段的数据，导致一些程序在运行的好似后会读取到错误的数据。最后为 ysyxsoc 添加了 timer 的 AM, 在运行 coremark 等程序时会用到，增加了对 timer 寄存器访问的 skip difftest 的逻辑.
+
+
 <!-- Content_END -->

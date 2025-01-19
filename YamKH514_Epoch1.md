@@ -381,4 +381,11 @@ What did I learn today: Debugging and Profiling
         **Network Connections and Config**: `ss` \
         **Network Usage**: `nethogs` and `iftop`
 
+### 01.19
+
+Duration of study: 30min \
+What did I learn today: Metaprogramming
+
+看完了讲义，感觉没有太多可写的，今天就摸了😴
+
 <!-- Content_END -->

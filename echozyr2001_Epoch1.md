@@ -1,10 +1,13 @@
 # CFC Studio 共学 Epoch1 指引
+
 ---
+
 # [echozyr2001]
 
 ## 笔记证明
 
-<!-- Content_START --> 
+<!-- Content_START -->
+
 ### 01.06
 
 > 学习时间：70 min
@@ -38,13 +41,13 @@ rwx 每三个字符构成一组。分别代表了文件所有者，用户组以�
 **单引号与双引号在bash中的区别？**
 
 > reference:
-> 
+>
 > https://www.gnu.org/software/bash/manual/html_node/Quoting.html
 
 **shell 是如何知晓这个文件需要使用 sh 来解析呢？**
 
 > reference:
-> 
+>
 > https://en.wikipedia.org/wiki/Shebang_(Unix)
 >
 > 在类 Unix 系统中像使用可执行文件那样使用一个文本文件时，程序加载器机制会将文件初始行进行解析，其中 `#!` 这部分被称为 `shebang`，除此之外的其他部分将被解析为指令。
@@ -58,8 +61,9 @@ rwx 每三个字符构成一组。分别代表了文件所有者，用户组以�
 1. 安装 zsh
 
 2. 安装插件管理器
-  * 轻量化 zinit： https://github.com/zdharma-continuum/zinit
-  * 重量级oh-my-zsh：https://ohmyz.sh/
+
+- 轻量化 zinit： https://github.com/zdharma-continuum/zinit
+- 重量级oh-my-zsh：https://ohmyz.sh/
 
 3. 主题配置使用 starship：https://starship.rs/zh-CN/
 
@@ -68,9 +72,9 @@ rwx 每三个字符构成一组。分别代表了文件所有者，用户组以�
 文章中提到在 `echo` 这样的命令遇到空格时，需要使用 `"` 或转义字符，但是我发现在我的终端中，可以正常使用。
 
 ```zsh
-➜  The-Missing-Semester git:(main) ✗ echo $SHELL       
+➜  The-Missing-Semester git:(main) ✗ echo $SHELL
 /bin/zsh
-➜  The-Missing-Semester git:(main) ✗ echo hello world           
+➜  The-Missing-Semester git:(main) ✗ echo hello world
 hello world
 ```
 
@@ -195,7 +199,7 @@ source /Users/echo/.docker/init-zsh.sh || true # Added by Docker Desktop
 
 对于单个用户来说，它们一般在用户的 home 目录下 `.bashrc` 或 `.zshrc`。对于全局来一般在 `/etc/profile` 或 `/etc/bashrc`。
 
->  linux 配置环境变量如此简单，windows 就是 💩
+> linux 配置环境变量如此简单，windows 就是 💩
 
 ---
 
@@ -220,17 +224,17 @@ source /Users/echo/.docker/init-zsh.sh || true # Added by Docker Desktop
 高级 Bash 脚本编写指南：https://tldp.org/LDP/abs/html/special-chars.html
 
 > `$0` - 脚本名
-> 
+>
 > `$1` 到 $9 - 脚本的参数。 $1 是第一个参数，依此类推。
-> 
+>
 > `$@` - 所有参数
-> 
+>
 > `$#` - 参数个数
-> 
+>
 > `$?` - 前一个命令的返回值
-> 
+>
 > `$$` - 当前脚本的进程识别码
-> 
+>
 > `!!` - 完整的上一条命令，包括参数。常见应用：当你因为权限不足执行命令失败时，可以使用 sudo !! 再尝试一次。
 >
 > `$_` - 上一条命令的最后一个参数。如果你正在使用的是交互式 shell，你可以通过按下 Esc 之后键入 . 来获取这个值。
@@ -406,7 +410,7 @@ vscode neovim 插件 https://marketplace.visualstudio.com/items?itemName=asvetli
         "vim.api.nvim_input('<ESC>')\nrequire('vscode-neovim').action('workbench.action.files.save')"
       ]
     }
-  },
+  }
 }
 ```
 
@@ -476,10 +480,10 @@ nvim.tar.gz
 
 常用文件描述符：
 
-* `0` 表示 `stdin`
-* `1` 表示 `stdout`
-* `2` 表示 `stderr`
-* `/dev/null` 表示空文件
+- `0` 表示 `stdin`
+- `1` 表示 `stdout`
+- `2` 表示 `stderr`
+- `/dev/null` 表示空文件
 
 `stdout` 和 `stderr` 默认都是将信息输出到终端上，但是它们还是有区别。
 
@@ -519,13 +523,13 @@ shell 也是一种编程语言，与我们常见的脚本语言 python、lua 类
 
 `kill` 命令经常用，但是不知道使用 `-9` 选项有什么作用，下面是 GPT 给我的答案：
 
->  kill 命令可以发送多种信号给进程，默认情况下，它发送 SIGTERM 信号（信号编号 15），这是请求进程正常结束的信号。以下是一些常用的信号：
+> kill 命令可以发送多种信号给进程，默认情况下，它发送 SIGTERM 信号（信号编号 15），这是请求进程正常结束的信号。以下是一些常用的信号：
 >
-> * SIGTERM (15)：请求进程正常终止，允许进程清理资源和文件等。进程可以选择忽略这个信号。
-> * SIGKILL (9)：强制立即终止进程，无法被进程捕获或忽略。通常用于终止无法正常结束的进程。
-> * SIGINT (2)：通常由用户通过按下 Ctrl + C 发送给前台进程，用于中断进程。
-> * SIGHUP (1)：通常用于通知进程重新加载配置文件，或者由于连接丢失而终止进程。
-> * SIGSTOP (19)：暂停（挂起）进程，不能被进程捕获或忽略。与 SIGCONT 相反，后者用于恢复暂停的进程。
+> - SIGTERM (15)：请求进程正常终止，允许进程清理资源和文件等。进程可以选择忽略这个信号。
+> - SIGKILL (9)：强制立即终止进程，无法被进程捕获或忽略。通常用于终止无法正常结束的进程。
+> - SIGINT (2)：通常由用户通过按下 Ctrl + C 发送给前台进程，用于中断进程。
+> - SIGHUP (1)：通常用于通知进程重新加载配置文件，或者由于连接丢失而终止进程。
+> - SIGSTOP (19)：暂停（挂起）进程，不能被进程捕获或忽略。与 SIGCONT 相反，后者用于恢复暂停的进程。
 
 > `SIGKILL` 是一个特殊的信号，它不能被进程捕获并且它会马上结束该进程。不过这样做会有一些副作用，例如留下孤儿进程。（不知道竟然还会有这样的问题。）
 
@@ -727,10 +731,10 @@ https://pyloong.github.io/cookiecutter-pythonic-project/#git-per-commit
 
 版本号按以下规则递增：
 
-* 所有版本号都以 `v` 开头。
-* 主版本号：发生了与之前版本不兼容的更新时修改。
-* 次版本号：发生了向下兼容的更新时修改，这里有一个不成文的规定：偶数为稳定版，奇数为开发版。
-* 修订号：发生了向后兼容的 `bug` 修复时修改。
+- 所有版本号都以 `v` 开头。
+- 主版本号：发生了与之前版本不兼容的更新时修改。
+- 次版本号：发生了向下兼容的更新时修改，这里有一个不成文的规定：偶数为稳定版，奇数为开发版。
+- 修订号：发生了向后兼容的 `bug` 修复时修改。
 
 还有这么一种版本号 `v1.2.3-alpha`，这是将先行版本号和版本编译元数据作为补充添加到了版本号中。如下图所示：
 
@@ -741,10 +745,10 @@ https://pyloong.github.io/cookiecutter-pythonic-project/#git-per-commit
 
 **规范**
 
-* 以标记版本的软件发布后，禁止改变其内容，任何修改都必须以新的版本发布。
-* 修订号必须在只做了向下兼容的 `bug` 修订时才递增。
-* 次版本号必须在有向下兼容的新功能出现时递增。其中可以包括修订级别的改变，每当次版本号递增时，修定号必须归零。
-* 主版本号必须在有任何不兼容的更新时递增。其中可以包括次版本以及修订级别的改变，每当主版本号递增时，次版本号和修订号必须归零。
+- 以标记版本的软件发布后，禁止改变其内容，任何修改都必须以新的版本发布。
+- 修订号必须在只做了向下兼容的 `bug` 修订时才递增。
+- 次版本号必须在有向下兼容的新功能出现时递增。其中可以包括修订级别的改变，每当次版本号递增时，修定号必须归零。
+- 主版本号必须在有任何不兼容的更新时递增。其中可以包括次版本以及修订级别的改变，每当主版本号递增时，次版本号和修订号必须归零。
 
 **实际开发中如何确定版本号**
 
@@ -775,13 +779,13 @@ https://pyloong.github.io/cookiecutter-pythonic-project/#git-per-commit
 SHA（安全哈希算法）目前主要有三个版本：
 
 1. **`sha-1`**
-生成固定长度的 160 位哈希值。由于算法设计的局限性，在 2005 年后发现了严重的安全缺陷。
+   生成固定长度的 160 位哈希值。由于算法设计的局限性，在 2005 年后发现了严重的安全缺陷。
 
 2. **`sha-2`**
-在 `sha-1` 的基础上增加了安全性和抵御攻击的能力，包含 `sha-224`、`sha-256`、`sha-384` 和 `sha-512` 多个算法变体，提供不同的输出长度。目前被广泛使用。
+   在 `sha-1` 的基础上增加了安全性和抵御攻击的能力，包含 `sha-224`、`sha-256`、`sha-384` 和 `sha-512` 多个算法变体，提供不同的输出长度。目前被广泛使用。
 
 3. **`sha-3`**
-设计上完全独立于 `sha-1` 和 `sha-2`，不受已知或潜在弱点影响。由于在当前技术条件下，`sha-3` 并没有显示出明显的效率优势，且 `sha-2` 目前仍足够安全，所以普及速度较慢。但它被广泛接受为替代 `sha-2` 的下一代哈希算法。
+   设计上完全独立于 `sha-1` 和 `sha-2`，不受已知或潜在弱点影响。由于在当前技术条件下，`sha-3` 并没有显示出明显的效率优势，且 `sha-2` 目前仍足够安全，所以普及速度较慢。但它被广泛接受为替代 `sha-2` 的下一代哈希算法。
 
 ---
 
@@ -792,7 +796,7 @@ SHA（安全哈希算法）目前主要有三个版本：
 以下内容记录在我的旧笔记中，仅做分享，目前不一定适用。
 
 1. 使用 brew 安装 gpg
-   
+
 ```shell
 brew install gpg
 ```
@@ -912,20 +916,21 @@ gpg: signing failed: Inappropriate ioctl for device
 解决方法如下（任选其一）：
 
 一、使用 GPG 的 TTY 模式
-* 设置 GPG 使用终端 (TTY) 来提示输入 PIN。您可以通过在 `~/.gnupg/gpg.conf` 文件中添加以下行来实现这一点：
+
+- 设置 GPG 使用终端 (TTY) 来提示输入 PIN。您可以通过在 `~/.gnupg/gpg.conf` 文件中添加以下行来实现这一点：
 
 ```shell
 use-agent
 pinentry-mode loopback
 ```
 
-   * 然后，在 `~/.gnupg/gpg-agent.conf` 文件中添加以下行：
+- 然后，在 `~/.gnupg/gpg-agent.conf` 文件中添加以下行：
 
 ```shell
 allow-loopback-pinentry
 ```
 
-   * 之后，重启 gpg-agent：
+- 之后，重启 gpg-agent：
 
 ```shell
 gpg-connect-agent reloadagent /bye
@@ -933,13 +938,13 @@ gpg-connect-agent reloadagent /bye
 
 二、使用`GPG_TTY`环境变量（未验证）
 
-* 在shell 配置文件中（如 `~/.bashrc` 或 `~/.zshrc`），添加以下行：
+- 在shell 配置文件中（如 `~/.bashrc` 或 `~/.zshrc`），添加以下行：
 
 ```shell
 export GPG_TTY=$(tty)
 ```
 
-* 然后，重新加载 shell 配置：
+- 然后，重新加载 shell 配置：
 
 ```shell
 source ~/.bashrc 或 source ~/.zshrc
@@ -947,7 +952,7 @@ source ~/.bashrc 或 source ~/.zshrc
 
 三、使用不需要PIN的GPG密钥（未验证）
 
-* 如果 GPG 密钥不需要 PIN，可以尝试生成一个不需要 PIN 的新密钥，并在 Git 中使用这个密钥进行签名。
+- 如果 GPG 密钥不需要 PIN，可以尝试生成一个不需要 PIN 的新密钥，并在 Git 中使用这个密钥进行签名。
 
 3. 在本地完成创建提交后，将其推送到 GitHub 上的远程仓库：
 
@@ -1037,7 +1042,7 @@ Aleo：https://aleo.org/，第一条使用零知识证明技术的公链。
 **用户态主控模块**：该模块负责整个系统的控制和协调。在系统启动时，用户态主控模块首先加载经过编译的 `eBPF` 字节码到内核，并将其挂载在 `getattr()` 和 `getxattr()` 函数上。通过与内核进行数据交流，用户态主控模块实现文件系统的基本功能，并充当用户态守护进程，等待用户操作和请求。
 
 **函数调用拦截模块**：该模块将被编译为 `BPF` 字节码等待主控模块挂载。当 `getattr()` 或 `getxattr()` 函数被调用时，函数调用拦截模块与共享数据映射模块进行交互。通过查询文件（或目录）的 `inode` 属性，函数调用拦截模块在共享数据映射模块中查找相应的映射表条目，并根据查找结果决定是否拦截函数调用或放行函数调用。
-   
+
 **共享数据 `maps` 映射模块**：该模块作为用户态与内核态之间数据交互的桥梁，负责维护映射表以实现数据的共享和访问。当函数调用被拦截时，共享数据映射模块根据文件的 `inode` 属性返回相应的信息给函数调用拦截模块。同时，当文件的属性发生变化时，共享数据映射模块从用户态获取最新的属性信息，并根据文件的 `inode` 属性更新映射表中相应的条目。
 
 上面的设计还停留在理论阶段，具体实现没有完成，大家感兴趣的话可以尝试实现或优化。
@@ -1047,5 +1052,17 @@ Aleo：https://aleo.org/，第一条使用零知识证明技术的公链。
 > 学习时间：120 min
 
 花费两个小时配置 `neovim`，遇到一个问题 `lsp` 插件找不到 `tsserver`，卡了很久都没法解决，结果查文档发现是名字写错了，应该是 `ts_ls`，鉴定为太久没用 `neovim` 被 `vscode` 污染思维了。
+
+### 01.19
+
+> 学习时间：60 min
+
+虽然主要内容已经看完了，但 21 天的安排还是需要有始有终，后面应该主要关注在各种工具的配置上。
+
+今天依然是在配置 `neovim`，经过两天的配置，基本的文件浏览器、语法检查、自动补全都已经配置好了，现在的效果如图所示。
+
+![neovim1](./images/echozyr2001/neovim1.png)
+
+![neovim2](./images/echozyr2001/neovim2.png)
 
 <!-- Content_END -->

@@ -186,6 +186,24 @@ grep (global search regular expression (RE) and print out the line) is a powerfu
 
 Proficient use of these three tools can meet most data processing needs.
 
+### 01.20
+
+Study Time: 2h
+
+#### Note
+
+Shell is using a UNIX communication mechanism called a *signal* to communicate information to the process. When a process receives a signal it stops its execution, deals with the signal and potentially changes the flow of execution based on the information that the signal delivered. For this reason, signals are *software interrupts*.
+
+It can become tiresome typing long commands that involve many flags or verbose options. For this reason, most shells support *aliasing*. A shell alias is a short form for another command that your shell will replace automatically for you.
+
+Many programs are configured using plain-text files known as *dotfiles*.Shells are one example of programs configured with such files. On startup, your shell will read many files to load its configuration. Depending on the shell, whether you are starting a login and/or interactive the entire process can be quite complex.
+
+The Secure Shell (SSH) protocol is a method for securely sending commands to a computer over an insecure network. SSH uses cryptography to authenticate and encrypt the connection between devices. SSH also enables tunneling or port forwarding, which is when packets of data can traverse a network that they would not otherwise be able to traverse. SSH is commonly used to remotely control servers, manage infrastructure, and transfer files.
+
+Remote encrypted connection: SSH establishes a connection between a user's device and a distant machine (usually a server). It uses encryption technology to scramble the data that passes through the connection. An intercepting party would only find something like static data - random data that is meaningless unless it is decrypted.
+
+Tunneling: In networking, tunneling is a method of moving packets of data across a network using protocols or paths that would not normally be used. Tunneling works by wrapping a packet of data with additional information (called a header), thereby changing its destination. SSH tunneling uses a technique called port forwarding to send packets from one machine to another.
+
 
 
 <!-- Content_END -->

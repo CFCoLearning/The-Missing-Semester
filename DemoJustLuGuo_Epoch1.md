@@ -551,4 +551,70 @@ wsl的内存是与windows共享的吗？既然是共享，那么7550这个总内
 
 今天疑似交的有点过晚了，下次一定先学习再打电动（心虚）
 
+### 01.20
+#### 学习时间：45分钟
+
+这个元编程看的有点晕晕的，就不写太多了。但是在跟着做构建系统的实操时出现了一些小问题。具体表现为python缺失`matplotlib`这个运行库，而且使用pip命令安装后报错。
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST/makeTEST$ pip install matplotlib
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+
+    If you wish to install a non-Debian packaged Python application,
+    it may be easiest to use pipx install xyz, which will manage a
+    virtual environment for you. Make sure you have pipx installed.
+
+    See /usr/share/doc/python3.12/README.venv for more information.    #错误类型为‘外部管理环境错误’，没懂这是什么意思，根据报错给的建议安装了几个包也没用，直接丢gpt试试了
+   
+```
+把报错丢给gpt分析了一下，gpt的说法是`这个错误是因为您的操作系统配置了 PEP 668，限制在全局范围内通过 pip 安装 Python 包。这种机制是为了保护系统的 Python 环境，避免非系统软件对系统核心环境产生影响。`
+根据gpt的解决方法，这里选择创建一个虚拟环境，使用`python3 -m venv myenv`创建一个名为myenv的虚拟环境
+输入`source myenv/bin/activate`以激活虚拟环境，最后再pip install就可以了。
+
+今天好像有点摸，但是给家里的路由器刷了openwrt，有了这几天折腾linux的基础，玩这个确实更得心应手了。准备等返校了继续研究一下校园网，去年校园网验证加强了之后机制就很奇怪，装了魔改过的openwrt就会被检测到，但是装一个干净的固件或者是padavan就不会检测到，而且在校园网设备页面显示的是电脑的mac。也不像是UA2F的问题，感觉应该是哪个软件包的锅，回校再看看怎么解决。
+
+最后模仿amberheart做一个结束告别（玩尬的）
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ jp2a nina1.png
+kkkx;,,,,'..     dddddo,       ,;;;;,;;;;;;;;;;;;;;;;;;;;;;;;;;;.     .,.         .;:::
+kkkd;,,.         ;ddddddo,      .;;,,,,,,;;;;;;;;;;;;;;;;;;;;;;.     .oddc.         .;;
+Okkd,.            .;odddddo,      ',,,,,;,;;;:;:::;;;;;;::;;;;.     .lddo;,,'..       ,
+Okko,     .::::'     ,odddddl.     ..',,,;;;;;;c:::::::::c:;,,'    .,,,:;,,,,oddc     ,
+kkko,     ldddddo;.    'lddddd,    .',,,,;;::,;:kcc:;;:;;;,,,,,'  ;:,,,,,,,,cddo.     ,
+kkkl,     .;dddddddc.    ......   .',,,,;;c0:::xXc;,,,,,,,,,,,,;.ldddlc;,,,,,;;      .,
+kkko:;.      ;ddddddo   ........ .',,,,;:ckkcclXNl;;,,;,,,,,,,,,,;coddddoc;,,.      .''
+kkkdol:.      .,llllc  .ddddddd:';'''',xkXNN0kONNk:;;;d,,,,,'',,,,,,;:lddddo.      ..''
+kkkl:,                 .odoooool:;,;x;dKOkxOXXXNNXOxdOOc,,''''',,;,,,,,,:co.      ....'
+0kxdo,    .ccccddll.           .c,,dd;KX0XXKKNNNNNNXXNNXc,''''',,dol:;,,,'      .......
+K0OOk;    .ddddKXdd.           .;,';:cXXXXNNNNNNNNNKkdONXx,'''''..;lddoo'      ........
+ollll,    .,,,,OX;'.    cool;;;l,:'''cKNNNNNNNNNNNNNNXkkNx,,''''    .'OK.     .........
+llllol.        ON,     ;KNNKdddoll;'''dNNNXoldkOXNNNNXXXO:x0,''lo,   .Xk     ..........
+kxxxxxkl'....:x0Xdo:.cOXXNNKdddl;;;''',dXN0xkkdlONNNNNXk:kOl'''NMMNk:cXc      .........
+NNNNNNNNNNWWXKNKXOXKXKWWWWWKdddl,,,'''oldKNK000KNNNX0d:,;;'',,dMMWNNXKXo:      ........
+WWWWWWWWWWWXXKXXNXNXXXNWWWWXddd:'.',;;cddx0KKKKX0kl;'''......'oKNKKX0XXKXO     ........
+WWWWWWWWNWWKXKKKKKKKKKXWWWWKdccc::loooodd0XXXXXKkddc,''',;...   dXXNXNXXX0,    ........
+WWWWWWWWWWWokKKKKKKKKKokXWXd;,,,;cccoolkXXXKKKKKOd:cclldc::'...;0KKKXKKXKKc   ........d
+WWWWWWWWWWWdckKKKKKKK0:;;:,,,,'',,,,;cONWW0o;kNNNKoc;,::,,,',,;;0KKKKKKKKO.  .........d
+WWWWWWWWWWWXc:oxkkkxdc,,,,,',,,,,,,,,;KN0o,.''o0XX:,,',,,,,,,,,;d0KKKKKKk;............d
+WWWWWWWWWWWWx;,,,,,,,,,,,,'''',',,,;ldO:....x...:Oo:,'',,,,,,,,,,;:loddl,.............d
+WWWWWWWWWWWWWo;,,,,,,,''''''''''',,,c0Oc;..;X'..,ddc;''''',,,,,,,,,,,,,,..............d
+WWWWWWWWWWWWWWO,,,,,'''',,''''''',,;oXNNx..oO'.dNNo;,''''''',,',',,,,,''.............'d
+WWWWWWWWWWWWWWWx;,,,,,,,,,''''''',,;oNNK'.'OO,.;X0;,'''''''',,,,,,'',,'..............'d
+0000KKKKKKKKXXXXOo:,,,,''''''''',,,;xx',,.',,'..'....,''''''',,,,,,,,,'..............,d
+ooooddddddddddxxxxdoc:;,''''''''',,;kx,::.,;;,;:;....''''''''',,,,,:co;..............'d
+,,,,,,,,,,,,,,,;;;;;;cl;''''''..o:o:xNNXXXXXKXXXK:;;o'..'''''''':odddo;...............'
+;;;::::;;;;;;::clodl;ox:.'''''''',lcoNWNNNKxXNNNk:l,''.'''''''',odddoo;................
+...............'''''..'...........'.';;;;;;;;;;;'''.............''''''.................
+```
+~~中专乐队女孩井芹仁菜向你说晚安~ ~~
+
 <!-- Content_END -->

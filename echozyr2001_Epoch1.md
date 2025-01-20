@@ -1065,4 +1065,128 @@ Aleo：https://aleo.org/，第一条使用零知识证明技术的公链。
 
 ![neovim2](./images/echozyr2001/neovim2.png)
 
+### 01.20
+
+> 学习时间：90 minutes
+
+继续进行 `neovim` 的配置，主要是优化了基本设置 `options` 和快捷键 `keymaps`
+
+```lua
+-- options.lua
+
+local opt = vim.opt
+
+opt.relativenumber = true -- set relative numbered lines
+opt.number = true -- Make line numbers default
+
+opt.tabstop = 4 -- insert n spaces for a tab
+opt.shiftwidth = 4 -- the number of spaces inserted for each indentation
+opt.expandtab = true -- convert tabs to spaces
+opt.autoindent = true -- copy indent from current line when starting new one
+
+opt.wrap = false -- display lines as one long line
+
+opt.ignorecase = true -- Case-insensitive searching UNLESS \C or capital in search
+opt.smartcase = true -- smart case
+
+opt.cursorline = true -- highlight the current line
+
+opt.termguicolors = true -- set termguicolors to enable highlight groups
+
+opt.background = "dark" -- colorschemes that can be light or dark will be dark
+opt.signcolumn = "yes" -- Keep signcolumn on by default
+
+opt.backspace = "indent,eol,start" -- allow backspace on
+
+opt.clipboard:append("unnamedplus") -- Sync clipboard between OS and Neovim.
+
+opt.splitright = true -- force all vertical splits to go to the right of current window
+opt.splitbelow = true -- force all horizontal splits to go below current window
+
+vim.o.hlsearch = false -- Set highlight on search
+vim.o.mouse = "a" -- Enable mouse mode
+vim.o.breakindent = true -- Enable break indent
+vim.o.undofile = true -- Save undo history
+vim.o.updatetime = 250 -- Decrease update time
+vim.o.timeoutlen = 300 -- time to wait for a mapped sequence to complete (in milliseconds)
+vim.o.backup = false -- creates a backup file
+vim.o.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
+vim.o.completeopt = "menuone,noselect" -- Set completeopt to have a better completion experience
+vim.o.whichwrap = "bs<>[]hl" -- which "horizontal" keys are allowed to travel to prev/next line
+vim.o.linebreak = true -- companion to wrap don't split words
+vim.o.scrolloff = 4 -- minimal number of screen lines to keep above and below the cursor
+vim.o.sidescrolloff = 8 -- minimal number of screen columns either side of cursor if wrap is `false`
+vim.o.numberwidth = 4 -- set number column width to 2 {default 4}
+vim.o.softtabstop = 4 -- Number of spaces that a tab counts for while performing editing operations
+vim.o.swapfile = false -- creates a swapfile
+vim.o.smartindent = true -- make indenting smarter again
+vim.o.showmode = false -- we don't need to see things like -- INSERT -- anymore
+vim.o.showtabline = 2 -- always show tabs
+vim.o.pumheight = 10 -- pop up menu height
+vim.o.conceallevel = 0 -- so that `` is visible in markdown files
+vim.o.fileencoding = "utf-8" -- the encoding written to a file
+vim.o.cmdheight = 1 -- more space in the neovim command line for displaying messages
+vim.opt.shortmess:append("c") -- don't give |ins-completion-menu| messages
+vim.opt.iskeyword:append("-") -- hyphenated words recognized by searches
+vim.opt.formatoptions:remove({ "c", "r", "o" }) -- don't insert the current comment leader automatically for auto-wrapping comments using 'textwidth', hitting <Enter> in insert mode, or hitting 'o' or 'O' in normal mode.
+vim.opt.runtimepath:remove("/usr/share/vim/vimfiles") -- separate vim plugins from neovim in case vim still in use
+```
+
+```lua
+-- keymaps.lua
+
+-- leader key
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
+-- for conciseness
+local keymap = vim.keymap
+
+-- Press jk fast to exit insert mode
+keymap.set("i", "jk", "<ESC>", { desc = "Exit insert mode with jk" })
+
+keymap.set("n", "<leader>nh", "<cmd>nohl<CR>", { desc = "Clear search highlights" })
+
+-- disable the spacebar key's default bebavior in n and v modes
+keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
+
+-- window
+keymap.set("n", "<leader>sv", "<C-w>v", { desc = "Split window vertically" })
+keymap.set("n", "<leader>sh", "<C-w>s", { desc = "Split window horizontally" })
+keymap.set("n", "<leader>se", "<C-w>=", { desc = "Make splits equal size" })
+keymap.set("n", "<leader>sx", "<cmd>close<CR>", { desc = "Close current split" })
+
+-- save file
+vim.keymap.set("n", "<C-s>", "<cmd> w <CR>")
+
+-- disable copy into register
+vim.keymap.set("n", "x", '"_x')
+
+-- save file without auto-formatting
+vim.keymap.set("n", "<leader>sn", "<cmd> noautocmd w <CR>")
+
+-- quit file
+vim.keymap.set("n", "<C-q>", "<cmd> q <CR>")
+
+-- find and center
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+-- -- resize
+-- vim.keymap.set('n', '<Up>', '<cmd> resize -2 <CR>', opts)
+-- vim.keymap.set('n', '<Down>', '<cmd> resize +2 <CR>', opts)
+-- vim.keymap.set('n', '<Left>', '<cmd> vertical resize -2 <CR>', opts)
+-- vim.keymap.set('n', '<Right>', '<cmd> vertical resize +2 <CR>', opts)
+--
+-- -- buffers
+-- vim.keymap.set('n', '<Tab>', '<cmd> bnext <CR>', opts)
+-- vim.keymap.set('n', '<S-Tab>', '<cmd> bprevious <CR>', opts)
+-- vim.keymap.set('n', '<leader>x', '<cmd> Bdelete! <CR>', opts)
+-- vim.keymap.set('n', '<leader>b', '<cmd> enew <CR>', opts)
+--
+
+-- toggle line wrapping
+vim.keymap.set("n", "<leader>lw", "<cmd> set wrap! <CR>", opts)
+```
+
 <!-- Content_END -->

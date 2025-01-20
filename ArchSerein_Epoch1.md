@@ -246,5 +246,18 @@ struct buf {
 
 > 在上次的 xip 实现中，in_xip 状态的更新有错误不应该根据 xip_state 处于 IDLE 状态简单的判断 xip 已经完成了一轮状态的转移，后来发现在 xip 取指令时 penable 是一直处于高电平的，于是就通过 penable 信号判断 xip 是否执行结束。后续需要将 reset_addr 和 linker script 的和 mrom 相关的切换到 flash。然后在改写 linker script 时出现了一个问题: file offset too huge，想了挺久没有想到为什么会导致这个问题的原因，就恢复到 mrom 时的然后简单的替换和修改地址空间。发现之前遗漏了 sdata 和 srodata 这两个段的数据，导致一些程序在运行的好似后会读取到错误的数据。最后为 ysyxsoc 添加了 timer 的 AM, 在运行 coremark 等程序时会用到，增加了对 timer 寄存器访问的 skip difftest 的逻辑.
 
+### 01.20
+
+> 今日学习时长
+
+> 3h
+
+> 今日学习任务
+
+> readings: memory hierarchy and cache(direct-mapped)
+
+> 学习内容小结
+
+> memory hierarchy 介绍了 SRAM, DRAM, EEPROM, FLASH and DISK 的相关概念，然后用了一个生活中的例子类比介绍了内存模型所利用的局部性原理。cache 是 18447 的 slide 中讨论的不过由于没有视频讲解，只看 slide 理解还是有些困难的。只看了关于 cache 的一些基本概念和如何尝试构建一个 direct-mapped cache. 还有一个离谱的是由于 npc 接入 soc 后仿真的效率显著的下降了导致我以为是指令执行失败，我开了 difftest 发现确实会有对比失败的指令执行，但是我检查了 axi 和 xip 应该是没有大问题的，毕竟 cpu-tests 是都可以跑过的。我试着去看了看 nemu 的 src，发现 nemu 的 memory 我是开了 random data 的导致 npc 取到的是 0，nemu 取到的是随机数据。现在我关闭了内存的随机化，但是跑了挺久(我一开始以为和 nemu 的速度慢不了多少)还是没有运行结束，我就在 coremark 里加了 debug info 才发现是运行得太慢了。
 
 <!-- Content_END -->

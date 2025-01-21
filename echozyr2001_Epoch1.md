@@ -1189,7 +1189,7 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "<leader>lw", "<cmd> set wrap! <CR>", opts)
 ```
 
-### 01.20
+### 01.21
 
 > 学习时间：30 min
 

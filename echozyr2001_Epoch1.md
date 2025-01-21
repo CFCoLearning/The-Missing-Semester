@@ -1189,4 +1189,61 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "<leader>lw", "<cmd> set wrap! <CR>", opts)
 ```
 
+### 01.21
+
+> 学习时间：30 min
+
+今天将 `tmux` 配置好了
+
+```text
+set -g default-terminal "screen-256color"
+
+set -g prefix C-a
+unbind C-b
+bind-key C-a send-prefix
+
+unbind %
+bind | split-window -h
+
+unbind '"'
+bind - split-window -v
+
+unbind r
+bind r source-file ~/.tmux.conf
+
+bind -r j resize-pane -D 5
+bind -r k resize-pane -U 5
+bind -r l resize-pane -R 5
+bind -r h resize-pane -L 5
+
+bind -r m resize-pane -Z
+
+set -g mouse on
+
+set-window-option -g mode-keys vi
+
+bind-key -T copy-mode-vi 'v' send -X begin-selection # start selecting text with "v"
+bind-key -T copy-mode-vi 'y' send -X copy-selection # copy text with "y"
+
+unbind -T copy-mode-vi MouseDragEnd1Pane # don't exit copy mode when dragging with mouse
+
+# tpm plugin
+set -g @plugin 'tmux-plugins/tpm'
+
+# list of tmux plugins
+set -g @plugin 'christoomey/vim-tmux-navigator'
+set -g @plugin 'tmux-plugins/tmux-resurrect' # persist tmux sessions after computer restart
+set -g @plugin 'tmux-plugins/tmux-continuum' # automatically saves sessions for you every 15 minutes
+
+# Color Theme
+set -g @plugin "arcticicestudio/nord-tmux"
+
+set -g @resurrect-capture-pane-contents 'on'
+set -g @continuum-restore 'on'
+
+# Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
+run '~/.tmux/plugins/tpm/tpm'
+
+```
+
 <!-- Content_END -->

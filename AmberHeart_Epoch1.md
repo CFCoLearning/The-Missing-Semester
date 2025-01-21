@@ -965,4 +965,97 @@ SHHis@AmberHeart:~# baibai 高山祐介小时候上学变成了空气
 今天就学到这里，高山祐介小时候上学变成了空气向各位告辞，各位下次再见捏~
 ```
 
+### 01.21
+#### 今日学习时长：40min
+
+对象不可改变 引用可改变 毕竟不可改变哈希值<br><br>
+
+巧妙的使用git add和git commit暂存区 有效避免文件赘余<br><br>
+
+git这个暂存区的设计还有log之类的可视化做的也太直观伟大了<br><br>
+
+查看历史哈希值之类的切换真的挺方便有效的<br><br>
+
+没什么内容塞点今天的实操吧<br><br>
+```bash
+SHHis@AmberHeart:~# mkdir luka
+SHHis@AmberHeart:~# cd luka
+SHHis@AmberHeart:~/luka# ls
+SHHis@AmberHeart:~/luka# git init
+Initialized empty Git repository in /root/luka/.git/
+SHHis@AmberHeart:~/luka# ls
+SHHis@AmberHeart:~/luka# ls -a
+.  ..  .git
+SHHis@AmberHeart:~/luka# ls .git
+HEAD  branches  config  description  hooks  info  objects  refs
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+SHHis@AmberHeart:~/luka# echo "kami baka" > luka.txt
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        luka.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+SHHis@AmberHeart:~/luka# git add luka.txt
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   luka.txt
+
+[master (root-commit) fd751ab] luka first show
+ Committer: root <root@AmberHeart>lose the file...
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+)
+ create mode 100644 luka.txt
+SHHis@AmberHeart:~/luka# git log
+commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2 (HEAD -> master)
+Author: root <root@AmberHeart>
+Date:   Tue Jan 21 02:23:22 2025 +0800
+
+    luka first show
+SHHis@AmberHeart:~/luka# git cat-file -p fd751ab
+tree fce2bd3e00c7e407d79e7632c5d20ffb7284e613
+author root <root@AmberHeart> 1737397402 +0800
+committer root <root@AmberHeart> 1737397402 +0800
+
+luka first show
+SHHis@AmberHeart:~/luka# git cat-file -p fce2bd3e00c7e407d79e7632c5d20ffb7284e613
+100644 blob d950e40352d9a77c520b0fbb39a994653f4fe052    luka.txt
+SHHis@AmberHeart:~/luka# git cat-file -p d950e40352d9a77c520b0fbb39a994653f4fe052
+kami baka
+SHHis@AmberHeart:~/luka#
+```
+最近还是忙 等AE做完转场和过场的特效就闲下来了
+
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai 全神人队
+今天就学到这里，全神人队向各位告辞，各位下次再见捏~
+```
+
+
 <!-- Content_END -->

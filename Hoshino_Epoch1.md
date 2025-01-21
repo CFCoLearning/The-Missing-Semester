@@ -204,6 +204,18 @@ Remote encrypted connection: SSH establishes a connection between a user's devic
 
 Tunneling: In networking, tunneling is a method of moving packets of data across a network using protocols or paths that would not normally be used. Tunneling works by wrapping a packet of data with additional information (called a header), thereby changing its destination. SSH tunneling uses a technique called port forwarding to send packets from one machine to another.
 
+### 1.21
+
+Study Time: 1h.
+
+#### Note
+
+Version control systems (VCSs) are tools used to track changes to source code (or other collections of files and folders). As the name implies, these tools help maintain a history of changes; furthermore, they facilitate collaboration. VCSs track changes to a folder and its contents in a series of snapshots, where each snapshot encapsulates the entire state of files/folders within a top-level directory. VCSs also maintain metadata like who created each snapshot, messages associated with each snapshot, and so on.
+
+While other VCSs exist, `Git` is the de facto standard for version control.Git is an open source distributed version control system that can effectively and quickly handle version management of projects from very small to very large.
+
+The general process of using `Git` is to use `git pull` to pull code from the remote repository, use `git commit` to commit the changes, and then use `git push` to push updates to the remote repository.
+
 
 
 <!-- Content_END -->

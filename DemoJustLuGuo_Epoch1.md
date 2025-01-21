@@ -615,6 +615,76 @@ ooooddddddddddxxxxdoc:;,''''''''',,;kx,::.,;;,;:;....''''''''',,,,,:co;.........
 ;;;::::;;;;;;::clodl;ox:.'''''''',lcoNWNNNKxXNNNk:l,''.'''''''',odddoo;................
 ...............'''''..'...........'.';;;;;;;;;;;'''.............''''''.................
 ```
-~~中专乐队女孩井芹仁菜向你说晚安~ ~~
+~~中专乐队女孩井芹仁菜向你说晚安~~
 
+### 01.21
+#### 学习时间：1小时
+
+又是在阴间的时间提交commit，我已经很努力调整作息了果咩纳塞
+
+今天看的是安全和密码学这一课，但是感觉这节有点晦涩了，只是了解一下。
+平常设置密码的话，edge/chrome倒是有个生成密码的功能，平常注册一些奇奇怪怪的网站会用这个。
+密码管理器倒是也有用过，之前小小体验了一下朋友部署的bitwarden，感觉确实挺不错的，但是没有坚持用下去。
+
+感觉这个加密挺有意思的。关于加密，我记得初中在贴吧找资源的时候，楼主会用`base64`这种编码来加密网址防止伸手党和被和谐。不过这种方式不需要key，很难称得上安全。这里介绍了对称加密与非对称加密，两者的区别应该是是否区分公钥/私钥。
+感觉讲义讲的不是很清楚，这里就找了点自己摘抄的
+
+>对称加密算法
+>特性：
+1、加密、解密使用同一个密钥，效率高
+2、将原始数据分割成固定大小的块，逐个进行加密
+缺陷：
+1、 密钥过多
+2、密钥分发
+3、数据来源无法确认
+>
+
+
+> 非对称加密算法
+公钥加密： 密钥是成对出现
+公钥：公开给所有人； public key
+私钥：自己留存，必须保证其私密性； secret key (private)
+特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然
+功能：
+数字签名：主要在于让接收方确认发送方身份
+对称密钥交换：发送方用对方的公钥加密一个对称密钥后发送给对方
+数据加密：适合加密较小数据
+缺点：密钥长， 加密解密效率低下
+>
+```bash
+#这里使用gpg对称加密方法来试了一下
+sakuraauro@DemoJustLuGuo:~$ gpg --gen-key
+（跳过中间的输出）
+Real name: shimarin
+Email address: shimarin3915@gmail.com
+You selected this USER-ID:
+    "shimarin <shimarin3915@gmail.com>"
+    Change (N)ame, (E)mail, or (O)kay/(Q)uit? o
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: /home/sakuraauro/.gnupg/trustdb.gpg: trustdb created
+gpg: directory '/home/sakuraauro/.gnupg/openpgp-revocs.d' created
+gpg: revocation certificate stored as '/home/sakuraauro/.gnupg/openpgp-revocs.d/xxxxxxxxxxxxxxxxxxxxx.rev'
+public and secret key created and signed.
+
+pub   ed25519 2025-01-21 [SC] [expires: 2028-01-21]
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+uid                      shimarin <shimarin3915@gmail.com>
+sub   cv25519 2025-01-21 [E] [expires: 2028-01-21]
+#这里密钥就创建好了
+```
+---
+```bash
+sakuraauro@DemoJustLuGuo:~$ touch hoshimachi.txt
+sakuraauro@DemoJustLuGuo:~$ vim hoshimachi.txt
+彗星のごとく現れたスターの原石！アイドルVtuberの星街すいせいでーす！ すいちゃんは——今日もかわいい！  #这个是txt里面的内容
+sakuraauro@DemoJustLuGuo:~$ gpg --output hoshimachi.gpg --encrypt --recipient shimarin3915@gmail.com hoshimachi.txt
+sakuraauro@DemoJustLuGuo:~$ scp -r hoshimachi.gpg shimarin@192.168.1.5:/home/shimarin
+#这里把这个文件用ssh发送到我的老电脑上
+sakuraauro@DemoJustLuGuo:~$ gpg --export -o new.key xxxxxxxxxxxxxxxxxxxxxxxxx
+#这里通过--list-keys显示的密钥，将该密钥导出为一个叫new.key的文件，接下来用自己喜欢的方式将这个文件发送到老电脑，使用--import导入就可以解密上面的gpg文件了。
+```
+ssh好玩捏，下次还玩🥰🥰🥰
 <!-- Content_END -->

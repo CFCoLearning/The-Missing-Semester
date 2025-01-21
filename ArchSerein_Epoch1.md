@@ -260,4 +260,18 @@ struct buf {
 
 > memory hierarchy 介绍了 SRAM, DRAM, EEPROM, FLASH and DISK 的相关概念，然后用了一个生活中的例子类比介绍了内存模型所利用的局部性原理。cache 是 18447 的 slide 中讨论的不过由于没有视频讲解，只看 slide 理解还是有些困难的。只看了关于 cache 的一些基本概念和如何尝试构建一个 direct-mapped cache. 还有一个离谱的是由于 npc 接入 soc 后仿真的效率显著的下降了导致我以为是指令执行失败，我开了 difftest 发现确实会有对比失败的指令执行，但是我检查了 axi 和 xip 应该是没有大问题的，毕竟 cpu-tests 是都可以跑过的。我试着去看了看 nemu 的 src，发现 nemu 的 memory 我是开了 random data 的导致 npc 取到的是 0，nemu 取到的是随机数据。现在我关闭了内存的随机化，但是跑了挺久(我一开始以为和 nemu 的速度慢不了多少)还是没有运行结束，我就在 coremark 里加了 debug info 才发现是运行得太慢了。
 
+### 01.21
+
+> 今日学习时长
+
+> 2h
+
+> 今日学习任务
+
+> 将接入 soc 的 npc 放到 nvboard 上运行，并添加 ioe 支持
+
+> 学习内容小结
+
+> 参考 nvboard 的 example 提供的 Makefile 可以较为轻松的修改 npc 的 Makefile，只需要注意一些小的细节。后续在添加 ioe 的支持时, 讲义中说的是 gpio 映射到了 0x10002000-0x1000200f, 但是我向 gpio 写入数据时在 gpio_apb_top 里接收到的 in_paddr 并没有在这个范围，没有想到原因，对于 gpio_apb_top 声明的端口也不是很清楚每个信号的作用是什么，但是现在我将 core 的顶层输出信号绑定到 nvboard 是确实有流水灯的更新，不过和我写入的数据不相符合，需要在修改。
+
 <!-- Content_END -->

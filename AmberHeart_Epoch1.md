@@ -1057,5 +1057,151 @@ SHHis@AmberHeart:~# baibai 全神人队
 今天就学到这里，全神人队向各位告辞，各位下次再见捏~
 ```
 
+### 01.22
+#### 今日学习时长：60min
+
+用brunch定义分支指针名字,可以随更新调整指针位置,做到不同分支的跳跃<br><br>
+
+git diff 区别 git checkout 切换分支指针 git merge 合并<br><br>
+
+正确的解决合并冲突 
+
+```bash
+#例如下列整出了一个分支
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+* commit b38f5da41a7c3d283f39a971021710a52447a16f (HEAD -> luka)
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|     luka update
+|
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:30:20 2025 +0800
+|
+|       luka gogogo
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+
+      luka first show
+```
+然后便是尝试通过merge整合两个不同的分支上的文件<br><br>
+
+实操如下<br><br>
+```bash
+SHHis@AmberHeart:~/luka# git merge master
+Auto-merging luka.sh
+CONFLICT (content): Merge conflict in luka.sh
+Automatic merge failed; fix conflicts and then commit the result.
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+* commit b38f5da41a7c3d283f39a971021710a52447a16f (HEAD -> luka)
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|     luka update
+|
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:30:20 2025 +0800
+|
+|       luka gogogo
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+
+      luka first show
+SHHis@AmberHeart:~/luka# git merge --continue
+U       luka.sh
+error: Committing is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+SHHis@AmberHeart:~/luka# git add luka.sh
+SHHis@AmberHeart:~/luka# git commit
+[luka 6825925] Merge branch 'master' into luka luka rebirth
+ Committer: root <root@AmberHeart>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+*   commit 682592531084ad222bcd262720d70e102704f26b (HEAD -> luka)
+|\  Merge: b38f5da b8075e0
+| | Author: root <root@AmberHeart>
+| | Date:   Wed Jan 22 03:43:43 2025 +0800
+| |
+| |     Merge branch 'master' into luka
+| |     luka rebirth
+| |
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+| | Author: root <root@AmberHeart>
+| | Date:   Wed Jan 22 03:30:20 2025 +0800
+| |
+| |     luka gogogo
+| |
+* | commit b38f5da41a7c3d283f39a971021710a52447a16f
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|       luka update
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+:
+#成功合并为单一快照、
+SHHis@AmberHeart:~/luka# source luka.sh
+lukachang
+lukachang
+-bash: luka.sh: line 3: syntax error near unexpected token `<<<'
+-bash: luka.sh: line 3: `<<<<<<< HEAD'
+SHHis@AmberHeart:~/luka# vim luka.sh
+echo lukachang
+echo lukachang
+<<<<<<< HEAD
+echo 何？
+=======
+echo nani
+>>>>>>> master
+#不过由于强行合并 此时是有冲突的 以冲突标记标记了出来 需要修改一下
+```
+git远程交互的命令有点多 实际上手后应该会熟悉很多<br><br>
+
+后面可以试试pro git和远程搭建一下github之类的 得等闲下来<br><br>
+
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai 萝萨莉亚我来找你啦
+今天就学到这里，萝萨莉亚我来找你啦向各位告辞，各位下次再见捏~
+```
 
 <!-- Content_END -->

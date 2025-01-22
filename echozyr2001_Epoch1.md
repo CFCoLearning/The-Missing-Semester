@@ -1246,4 +1246,10 @@ run '~/.tmux/plugins/tpm/tpm'
 
 ```
 
+### 01.22
+
+> 学习时间：40 min
+
+继续 `neovim` 的配置，主要修复一些 bug。
+
 <!-- Content_END -->

@@ -192,4 +192,100 @@ struct buf {
 
 > 持久化的测试调试不了一点, 只能看到错误信息是 "存在名字为空的文件"，但是看不到其他的信息, 对于它打包的 tar 文件也是很难查看, 呃呃呃放弃了。后面开始看 18447 的 slides 了，cs162 就到这了吧。
 
+### 01.16
+
+> 今日学习时长
+
+> 4h
+
+> 今日学习任务
+
+> out-of-order's lecture, Memory Technology and Organization's slide and P&H 5.1-5.2
+
+> 学习内容小结
+
+> OoO 主要介绍的是指令的调度和寄存器的重命名。第一种方案是每个 unit 会有一个 reservation table 记录使用的数据的来源, 每一个条目有一个别名, 会将这个别名记录到 registers alias table 中作为寄存器的别名并将寄存器的 valid 位置为 0表示这个寄存器的值在后续的 cycle 中由 producer 写入, 所有和这个寄存器有关的 consumer 都会被 stall。在 producer 完成该条指令后会通过总线进行广播，会更新每个 unit 和 registers alias table 中和这个寄存器相关的条目，如果该条目更新后，需要的源数据都准备好后就会有调度器决定是否进入后续的流水线。关于每个 unit 中的数据什么时候 retire，我还不是很清楚。由于通过总线广播生产的数据时会在很多个 table 中复制，为了减少这种消耗，后来简化成了类似指针的结构，分为前端的寄存器和与 arch 状态相关的物理寄存器，前端的寄存器在 renaming 后会有一个 index 指向实际使用的物理寄存器，以这种方式减少数据的复制。对于 commit 的指令不会立刻 retire，而是保存在 rob 中，保证顺序发射，乱许执行，顺序提交，用以实现精确异常。后面还补充了关于内存类似的步骤，不过由于内存的地址空间是非常大的，难以使用 renaming。
+
+### 01.17
+
+> 今日学习时长
+
+> 5h
+
+> 今日学习任务
+
+> 实现 xip 取指方式，程序可以跳转到 flash 空间执行
+
+> 学习内容小结
+
+> 要在硬件层次实现 flash_read() 的功能, 也就是要按照一定的顺序在硬件上访问SPI master的寄存器. 需要用状态机实现 flash_read() 的功能! 与上文从flash中加载程序并执行的方式不同, 这种从flash颗粒中取指的方式并不需要在执行程序之前将程序读入到内存(对应上文的SRAM)中, 因此也称"就地执行"(XIP, eXecute In Place)方式。ysyxSOC 把 spi master 的地址空间和 flash 的地址空间都映射到了 apb 端口, 即是说在实现 xip 取指令的同时需要区分访问的是 spi 还是 flash。
+
+> 讲义给出了如何实现的简单描述: 
+
+1. 检查APB请求的目标地址, 若目标地址落在SPI master的地址空间, 则正常访问并回复
+2. 若目标地址落在flash存储空间, 则进入XIP模式. 在XIP模式中, SPI master的输入信号由相应状态机决定
+3. 状态机依次往SPI master的设备寄存器中写入相应的值, 写入的值与flash_read()基本一致
+4. 状态机轮询SPI master的完成标志, 等待SPI master完成数据传输
+5. 状态机从SPI master的RX寄存器中读出flash返回的数据, 处理后通过APB返回, 并退出XIP模式
+
+> 因此我根据 flash_read 的软件实现设置了7个状态分别用来表示 xip空闲, 写 CMD, 写 DIV，写CTRL，选择 slave，循环读取 CTRL 中的完成标志位，读取 RX 寄存器中的值，禁用 slave(感觉不是必须)
+
+> 读取出的数据是字节倒序的需要 invert_endian
+
+### 01.19
+
+> 今日学习时长
+
+> 6h
+
+> 今日学习任务
+
+> 在上次实现 xip 后将程序加载到 flash 执行
+
+> 学习内容小结
+
+> 在上次的 xip 实现中，in_xip 状态的更新有错误不应该根据 xip_state 处于 IDLE 状态简单的判断 xip 已经完成了一轮状态的转移，后来发现在 xip 取指令时 penable 是一直处于高电平的，于是就通过 penable 信号判断 xip 是否执行结束。后续需要将 reset_addr 和 linker script 的和 mrom 相关的切换到 flash。然后在改写 linker script 时出现了一个问题: file offset too huge，想了挺久没有想到为什么会导致这个问题的原因，就恢复到 mrom 时的然后简单的替换和修改地址空间。发现之前遗漏了 sdata 和 srodata 这两个段的数据，导致一些程序在运行的好似后会读取到错误的数据。最后为 ysyxsoc 添加了 timer 的 AM, 在运行 coremark 等程序时会用到，增加了对 timer 寄存器访问的 skip difftest 的逻辑.
+
+### 01.20
+
+> 今日学习时长
+
+> 3h
+
+> 今日学习任务
+
+> readings: memory hierarchy and cache(direct-mapped)
+
+> 学习内容小结
+
+> memory hierarchy 介绍了 SRAM, DRAM, EEPROM, FLASH and DISK 的相关概念，然后用了一个生活中的例子类比介绍了内存模型所利用的局部性原理。cache 是 18447 的 slide 中讨论的不过由于没有视频讲解，只看 slide 理解还是有些困难的。只看了关于 cache 的一些基本概念和如何尝试构建一个 direct-mapped cache. 还有一个离谱的是由于 npc 接入 soc 后仿真的效率显著的下降了导致我以为是指令执行失败，我开了 difftest 发现确实会有对比失败的指令执行，但是我检查了 axi 和 xip 应该是没有大问题的，毕竟 cpu-tests 是都可以跑过的。我试着去看了看 nemu 的 src，发现 nemu 的 memory 我是开了 random data 的导致 npc 取到的是 0，nemu 取到的是随机数据。现在我关闭了内存的随机化，但是跑了挺久(我一开始以为和 nemu 的速度慢不了多少)还是没有运行结束，我就在 coremark 里加了 debug info 才发现是运行得太慢了。
+
+### 01.21
+
+> 今日学习时长
+
+> 2h
+
+> 今日学习任务
+
+> 将接入 soc 的 npc 放到 nvboard 上运行，并添加 ioe 支持
+
+> 学习内容小结
+
+> 参考 nvboard 的 example 提供的 Makefile 可以较为轻松的修改 npc 的 Makefile，只需要注意一些小的细节。后续在添加 ioe 的支持时, 讲义中说的是 gpio 映射到了 0x10002000-0x1000200f, 但是我向 gpio 写入数据时在 gpio_apb_top 里接收到的 in_paddr 并没有在这个范围，没有想到原因，对于 gpio_apb_top 声明的端口也不是很清楚每个信号的作用是什么，但是现在我将 core 的顶层输出信号绑定到 nvboard 是确实有流水灯的更新，不过和我写入的数据不相符合，需要在修改。
+
+### 01.22
+
+> 今日学习时长
+
+> 3h
+
+> 今日学习任务
+
+> 实现 psram 的仿真模型
+
+> 学习内容小结
+
+> 状态转换混乱, 数据传递过程不清晰，时序惨不忍睹，甚至仿真环境的 DPI-C 函数会 coredump。
+
 <!-- Content_END -->

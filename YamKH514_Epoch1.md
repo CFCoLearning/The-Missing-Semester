@@ -272,4 +272,127 @@ Using `paste` to combine lines(`-s`) by a given single-character delimiter(`-d`;
 `awk`, a programming language which is really good at processing text streams. \
 But at the same time, `awk` is complex. Browsing [awk | tldr InBrowser.App](https://tldr.inbrowser.app/pages.zh/common/awk) to get more infomation.
 
+### 01.16
+
+Duration of study: 1h \
+What did I learn today: Command-line Environment
+
+**Job Control**
+- Killing a process \
+    When a process receives a signal (which is a UNIX communication mechanism) it stops its execution, deal with the signal and potentially changes the flow of execution based on the information that the signal. This signal are `software interrupts`. \
+    When we type `^C`, our shell will deliver a `SIGINT` signal to the process.
+    ```python
+    #!/usr/bin/env python
+    import signal, time
+
+    def handler(signum, time):
+        print("\nI got a SIGINT, but I am not stopping")
+
+    signal.signal(signal.SIGINT, handler)
+    i = 0
+    while True:
+        time.sleep(.1)
+        print("\r{}".format(i), end="")
+        i += 1
+    ```
+    We can find that we can't kill this program by using `^C`, but if we use `^\` we can successfully kill this program.
+    ```bash
+    ren@ren-VMware-Virtual-Platform:~$ python3 test.py 
+    18^C
+    I got a SIGINT, but I am not stopping
+    22^C
+    I got a SIGINT, but I am not stopping
+    37^\Quit (core dumped)
+    ```
+    `^\` means `SIGQUIT`. \
+   Both `SIGINT` and `SIGQUIT` are usually used to exit the process, but the `SIGTERM` is a more generic graceful signal for asking a process to exit. And we can use `kill -TERM <PID>` to send this signal.
+
+- Pausing and backgrounding processes \
+    Typing `^Z` will send `SIGSTOP` to pauses a process. We can then continue the paused job in the foreground or background using `fg` or `bg`, respectively. And we also can type `jobs` to list the unfinished jobs associated with the current terminal session.
+    ```bash
+    ren@ren-VMware-Virtual-Platform:~$ sleep 1000
+    ^Z
+    [1]+  Stopped                 sleep 1000
+    ren@ren-VMware-Virtual-Platform:~$ jobs
+    [1]+  Stopped                 sleep 1000
+    ren@ren-VMware-Virtual-Platform:~$ sleep 1000 &
+    [2] 6747
+    ren@ren-VMware-Virtual-Platform:~$ jobs
+    [1]+  Stopped                 sleep 1000
+    [2]-  Running                 sleep 1000 &
+    ren@ren-VMware-Virtual-Platform:~$ fg %1
+    sleep 1000
+    ^Z
+    [1]+  Stopped                 sleep 1000
+    ```
+
+**Terminal Multiplexers**
+> The most popular terminal multiplexer these days is tmux.
+
+[A Quick and Easy Guide to tmux](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/)
+
+### 01.17
+
+Duration of study: 30min \
+What did I learn today: Command-line Environment
+
+**Aliases** \
+Using `alias` command to config aliases, like:
+```bash
+alias ll="ls -lh"
+```
+
+**Copying files over SSH** \
+- Using `ssh+tee` commands.
+    ```bash
+    cat localfile | ssh remote_server tee serverfile
+    ```
+- Using `scp` command to copy large amounts of files/directories.
+    ```bash
+    scp path/to/local_file remote_host:path/to/remote_file
+    ```
+
+### 01.18
+
+Duration of study: 30min \
+What did I learn today: Debugging and Profiling
+
+**Debugging**
+
+> “The most effective debugging tool is still careful thought, coupled with judiciously placed print statements” — Brian Kernighan, Unix for Beginners.
+
+- Printing and Logging
+- Using debuggers, like [cgdb](https://cgdb.github.io/)
+
+**Profiling**
+
+- Using Timing
+- Using Profilers
+    - CPU profilers
+        Using `cProfile` in python
+    - Memory leak analysis
+        We can use Valgrind that help us identify memory leaks
+    - Resource Monitoring: \
+        **General Monitoring**: `htop` \
+        **IO operations**: `iotop` \
+        **Disk Usage**: `df` \
+        **Memory Usage**: `free` \
+        **Open Files**: `lsof` \
+        **Network Connections and Config**: `ss` \
+        **Network Usage**: `nethogs` and `iftop`
+
+### 01.19
+
+Duration of study: 30min \
+What did I learn today: Metaprogramming
+
+看完了讲义，感觉没有太多可写的，今天就摸了😴
+
+### 01.23
+
+Duration of study:  20min\
+What did I learn today: Security and Cryptography
+
+把密码学简单看了一下，最近摸的有点多 ╯︿╰
+
 <!-- Content_END -->

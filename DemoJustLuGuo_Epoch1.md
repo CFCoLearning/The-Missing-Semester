@@ -398,5 +398,309 @@ shimarin@WINPC-906291016:~$ logout
 Connection to 192.168.1.5 closed.
 ```
 
+### 01.16
+
+#### 学习时长：1小时
+
+学习了git的使用
+
+简单来说，在git中文件被称作 Blob 对象（数据对象），也就是一组数据。目录则被称之为“树”，它将名字与 Blob 对象或树对象进行映射，快照则是被追踪的最顶层的树。
+一个树看起来可能是这样的：
+
+```
+<root> (tree)  #这是一个快照
+|
++- foo (tree)
+|  |
+|  + bar.txt (blob, contents = "hello world")  #名为foo的树包含了一个文件（对象）bar.txt
+|
++- baz.txt (blob, contents = "git is wonderful")  #这个文件是直接指向快照的
+```
+
+git中的提交是不可改变的。但这并不代表错误不能被修改，只不过这种“修改”实际上是创建了一个全新的提交记录。而引用则被更新为指向这些新的提交。
+
+git还包括一个暂存区，在编辑快照时，改动会存在此区中，允许指定下次快照中要包括哪些改动。
+
+git的命令行：（只列了一些自己应该会常用的）
+- git init: 创建一个新的 git 仓库，其数据会存放在一个名为 .git 的目录下
+- git status: 显示当前的仓库状态
+- git add <filename>: 添加文件到暂存区
+- git commit: 创建一个新的提交
+- git diff <filename>: 显示与暂存区文件的差异
+- git checkout <revision>: 更新 HEAD 和目前的分支
+- git branch: 显示分支
+- git merge <revision>: 合并到当前分支
+- git mergetool: 使用工具来处理合并冲突
+- git remote add <name> <url>: 添加一个远端
+- git push <remote> <local branch>:<remote branch>: 将对象传送至远端并更新远端引用
+- git fetch: 从远端获取对象/索引
+- git pull: 相当于 git fetch; git merge
+- git clone: 从远端下载仓库
+- git checkout -- <file>: 丢弃修改
+- git commit --amend: 编辑提交的内容或信息
+- git reset HEAD <file>: 恢复暂存的文件
+
+本节课主要注重于理解git的设计以让我们更好地使用它，在上这节课之前我就已经开始使用了，所以听起来并不感觉有什么不理解的地方。将这节课的内容放到共学项目上的报名步骤就很好理解了，首先要报名的人fork主仓库，将报名信息合并到主仓库，等待报名成功后每天将学习日志直接提交到主仓库，这里每日的提交就相当于创建了一个新快照。当然以防万一你也可以先提交到自己分支的仓库，确保OK后再合并到主仓库。
+
+今天就先看到这里，主要是感觉重理解的课程确实没啥好写的。 ~~（开始看我的爆炸梦之颂乐人偶）~~
+
+### 01.18
+
+#### 学习时长：1小时
+
+昨天看了一点网上的教程尝试在局域网搭一个网站，但是折腾了两个小时失败了，就没有写笔记。
+
+今天就继续看调试与性能分析这节的内容，讲的是如何处理代码中的bug和优化代码，前面调试代码改变输出结果的颜色就不多写了，把代码引用过来就行了，试了一下还挺好玩的。
+
+>echo -e "\e[38;2;255;0;0mThis is red\e[0m"  #打印红色的字符串:this is red
+>
+>控制色彩的字符名为ANSI颜色控制码，这个就不多说了，贴个维基的介绍：https://zh.wikipedia.org/wiki/ANSI%E8%BD%AC%E4%B9%89%E5%BA%8F%E5%88%97
+
+还有个是大部分linux的系统日志都会使用`systemd`，这是一个系统守护进程，systemd会将日志存放在/var/log/journal，可以使用`journalctl`命令显示这些信息。之前在讲ssh的时候就用过这个代码，因为系统日志有些长就可以通过`grep`命令将我们需要的信息过滤出来。还有些其他的工具类似于`lnav`也可以很好的展现和浏览日志。
+
+虽然说大部分人在代码遇到问题时都会在发现问题的地方添加打印语句，但是在运行一些大型代码时就会显得难以下手，这时可以使用调试器，课上使用的示例语言是`python`(pdb)，这里是我的实操记录。
+
+
+```bash
+#wsl并没有预装python，这里我们先安装
+sakuraauro@DemoJustLuGuo:~$ python
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3
+sakuraauro@DemoJustLuGuo:~$ sudo apt install python3 #如果忘了python的安装命令又不想百度或者用apt命令查，可以试着打与其相关的命令，linux会提醒你的（笑）
+sakuraauro@DemoJustLuGuo:~$ python
+Command 'python' not found, did you mean:
+  command 'python3' from deb python3
+  command 'python' from deb python-is-python3 #安装了之后还是这样，是因为安装的python3插件的命令是python3
+  sakuraauro@DemoJustLuGuo:~$ sudo apt install python-is-python3
+  sakuraauro@DemoJustLuGuo:~$ python
+Python 3.12.3 (main, Nov  6 2024, 18:32:19) [GCC 13.2.0] on linux
+Type "help", "copyright", "credits" or "license" for more information. #把另外一个叫python-is-python3的插件也装上了，既然能显示出来版本信息了就应该没问题了
+```
+
+---
+写在之后：要使用pdb请安装python-dev-is-python3
+---
+
+```bash
+#这里直接复制了讲义上的python代码，先执行一遍。
+sakuraauro@DemoJustLuGuo:~/TEST$ vim debug.py
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+Traceback (most recent call last):
+  File "/home/sakuraauro/TEST/debug.py", line 11, in <module>
+    print(bubble_sort([4, 2, 1, 8, 7, 6]))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sakuraauro/TEST/debug.py", line 6, in bubble_sort
+    if arr[j] > arr[j+1]:
+                ~~~^^^^^
+IndexError: list index out of range   #这里输出的错误出现在6和11行，有个IndexError（索引列表越界）错误，我们使用pdb来修复此代码
+sakuraauro@DemoJustLuGuo:~/TEST$ pdb debug.py
+(省略中间的输出)
+
+IndexError: list index out of range
+Uncaught exception. Entering post mortem debugging
+Running 'cont' or 'step' will restart the program
+> /home/sakuraauro/TEST/debug.py(6)bubble_sort()
+-> if arr[j] > arr[j+1]:  #这里直接执行pdb(c)命令，当程序运行到第6行时便崩溃了
+(Pdb) p arr
+[2, 1, 1, 7, 6, 6]
+(Pdb) p j
+5                     #在程序终止运行的地方打印数组的结果，arr中有2,1,1,7,6,6六个数，j的值是5，代入表达式就是 arr[5] > arr[6] 这里的arr[6]表示数组第七个数，所以这里出现了越界错误
+sakuraauro@DemoJustLuGuo:~/TEST$ vim debug.py
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+[1, 1, 1, 6, 6, 6]    #我们将第五行的range(n)改为range(n-1)后再运行代码就能够输出结果了，此时第六行的执行结果应该是 arr[4] > arr [5] 符合要求。
+```
+
+这章内容有点多，课虽然看完了但是实操还没做完，分两天做吧
+
+### 01.19
+#### 学习时间：45分钟
+
+关于web的开发者工具，这在以后应该是要经常要用的东西，在浏览器中按F12即可打开，火狐的开发者工具应该和chrome有点差别，其他的大概没什么特别的了，毕竟大部分浏览器的内核用的都是chromium嘛。
+
+接下来是静态分析的内容，依旧引用的是讲义的内容，py的静态分析工具`pyflakes`依旧需要使用apt命令安装，这个就不多说了。
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ python debug.py
+0
+1
+2
+3
+4
+Traceback (most recent call last):
+  File "/home/sakuraauro/TEST/debug.py", line 12, in <module>
+    print(baz)
+          ^^^
+NameError: name 'baz' is not defined. Did you mean: 'bar'?
+```
+我们先直接执行一遍这个代码，错误输出为第12行，但是当我们修改过后，输出仍为0,1,2,3,4,0,2。前面的数并没有按照预期输出42。这里就直接使用pyflakes进行操作。
+
+>sakuraauro@DemoJustLuGuo:~/TEST$ pyflakes3 debug.py
+>
+>debug.py:7:5: redefinition of unused 'foo' from line 4
+
+下面的性能分析与优化内容，我觉得比较有趣的是利用分析器来显示各函数调用所需的时间，还有利用`Valgrind`这个工具检测内存泄漏问题（沟槽的内存泄漏）。其他的话，我觉得还是得自己实战写代码，在真正着手进行优化的时候才能真正学到。
+
+还有资源监控的内容，就过了一遍，但是我在执行`free`命令时发现一些奇怪的东西
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ free -m
+               total        used        free      shared  buff/cache   available
+Mem:            7550         911        5846           3        1043        6638
+Swap:           2048           0        2048
+```
+wsl的内存是与windows共享的吗？既然是共享，那么7550这个总内存是从哪里获得的数据呢，这里空闲内存也与任务管理器的对不上，下面swap压缩内存倒是之前折腾手机的时候在scene上没少见过，不过鉴于我在各个方面都了解一点但都是半罐水的特性，我也分析不出个所以然。
+
+今天疑似交的有点过晚了，下次一定先学习再打电动（心虚）
+
+### 01.20
+#### 学习时间：45分钟
+
+这个元编程看的有点晕晕的，就不写太多了。但是在跟着做构建系统的实操时出现了一些小问题。具体表现为python缺失`matplotlib`这个运行库，而且使用pip命令安装后报错。
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST/makeTEST$ pip install matplotlib
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+
+    If you wish to install a non-Debian packaged Python application,
+    it may be easiest to use pipx install xyz, which will manage a
+    virtual environment for you. Make sure you have pipx installed.
+
+    See /usr/share/doc/python3.12/README.venv for more information.    #错误类型为‘外部管理环境错误’，没懂这是什么意思，根据报错给的建议安装了几个包也没用，直接丢gpt试试了
+   
+```
+把报错丢给gpt分析了一下，gpt的说法是`这个错误是因为您的操作系统配置了 PEP 668，限制在全局范围内通过 pip 安装 Python 包。这种机制是为了保护系统的 Python 环境，避免非系统软件对系统核心环境产生影响。`
+根据gpt的解决方法，这里选择创建一个虚拟环境，使用`python3 -m venv myenv`创建一个名为myenv的虚拟环境
+输入`source myenv/bin/activate`以激活虚拟环境，最后再pip install就可以了。
+
+今天好像有点摸，但是给家里的路由器刷了openwrt，有了这几天折腾linux的基础，玩这个确实更得心应手了。准备等返校了继续研究一下校园网，去年校园网验证加强了之后机制就很奇怪，装了魔改过的openwrt就会被检测到，但是装一个干净的固件或者是padavan就不会检测到，而且在校园网设备页面显示的是电脑的mac。也不像是UA2F的问题，感觉应该是哪个软件包的锅，回校再看看怎么解决。
+
+最后模仿amberheart做一个结束告别（玩尬的）
+```bash
+sakuraauro@DemoJustLuGuo:~/TEST$ jp2a nina1.png
+kkkx;,,,,'..     dddddo,       ,;;;;,;;;;;;;;;;;;;;;;;;;;;;;;;;;.     .,.         .;:::
+kkkd;,,.         ;ddddddo,      .;;,,,,,,;;;;;;;;;;;;;;;;;;;;;;.     .oddc.         .;;
+Okkd,.            .;odddddo,      ',,,,,;,;;;:;:::;;;;;;::;;;;.     .lddo;,,'..       ,
+Okko,     .::::'     ,odddddl.     ..',,,;;;;;;c:::::::::c:;,,'    .,,,:;,,,,oddc     ,
+kkko,     ldddddo;.    'lddddd,    .',,,,;;::,;:kcc:;;:;;;,,,,,'  ;:,,,,,,,,cddo.     ,
+kkkl,     .;dddddddc.    ......   .',,,,;;c0:::xXc;,,,,,,,,,,,,;.ldddlc;,,,,,;;      .,
+kkko:;.      ;ddddddo   ........ .',,,,;:ckkcclXNl;;,,;,,,,,,,,,,;coddddoc;,,.      .''
+kkkdol:.      .,llllc  .ddddddd:';'''',xkXNN0kONNk:;;;d,,,,,'',,,,,,;:lddddo.      ..''
+kkkl:,                 .odoooool:;,;x;dKOkxOXXXNNXOxdOOc,,''''',,;,,,,,,:co.      ....'
+0kxdo,    .ccccddll.           .c,,dd;KX0XXKKNNNNNNXXNNXc,''''',,dol:;,,,'      .......
+K0OOk;    .ddddKXdd.           .;,';:cXXXXNNNNNNNNNKkdONXx,'''''..;lddoo'      ........
+ollll,    .,,,,OX;'.    cool;;;l,:'''cKNNNNNNNNNNNNNNXkkNx,,''''    .'OK.     .........
+llllol.        ON,     ;KNNKdddoll;'''dNNNXoldkOXNNNNXXXO:x0,''lo,   .Xk     ..........
+kxxxxxkl'....:x0Xdo:.cOXXNNKdddl;;;''',dXN0xkkdlONNNNNXk:kOl'''NMMNk:cXc      .........
+NNNNNNNNNNWWXKNKXOXKXKWWWWWKdddl,,,'''oldKNK000KNNNX0d:,;;'',,dMMWNNXKXo:      ........
+WWWWWWWWWWWXXKXXNXNXXXNWWWWXddd:'.',;;cddx0KKKKX0kl;'''......'oKNKKX0XXKXO     ........
+WWWWWWWWNWWKXKKKKKKKKKXWWWWKdccc::loooodd0XXXXXKkddc,''',;...   dXXNXNXXX0,    ........
+WWWWWWWWWWWokKKKKKKKKKokXWXd;,,,;cccoolkXXXKKKKKOd:cclldc::'...;0KKKXKKXKKc   ........d
+WWWWWWWWWWWdckKKKKKKK0:;;:,,,,'',,,,;cONWW0o;kNNNKoc;,::,,,',,;;0KKKKKKKKO.  .........d
+WWWWWWWWWWWXc:oxkkkxdc,,,,,',,,,,,,,,;KN0o,.''o0XX:,,',,,,,,,,,;d0KKKKKKk;............d
+WWWWWWWWWWWWx;,,,,,,,,,,,,'''',',,,;ldO:....x...:Oo:,'',,,,,,,,,,;:loddl,.............d
+WWWWWWWWWWWWWo;,,,,,,,''''''''''',,,c0Oc;..;X'..,ddc;''''',,,,,,,,,,,,,,..............d
+WWWWWWWWWWWWWWO,,,,,'''',,''''''',,;oXNNx..oO'.dNNo;,''''''',,',',,,,,''.............'d
+WWWWWWWWWWWWWWWx;,,,,,,,,,''''''',,;oNNK'.'OO,.;X0;,'''''''',,,,,,'',,'..............'d
+0000KKKKKKKKXXXXOo:,,,,''''''''',,,;xx',,.',,'..'....,''''''',,,,,,,,,'..............,d
+ooooddddddddddxxxxdoc:;,''''''''',,;kx,::.,;;,;:;....''''''''',,,,,:co;..............'d
+,,,,,,,,,,,,,,,;;;;;;cl;''''''..o:o:xNNXXXXXKXXXK:;;o'..'''''''':odddo;...............'
+;;;::::;;;;;;::clodl;ox:.'''''''',lcoNWNNNKxXNNNk:l,''.'''''''',odddoo;................
+...............'''''..'...........'.';;;;;;;;;;;'''.............''''''.................
+```
+~~中专乐队女孩井芹仁菜向你说晚安~~
+
+### 01.21
+#### 学习时间：1小时
+
+又是在阴间的时间提交commit，我已经很努力调整作息了果咩纳塞
+
+今天看的是安全和密码学这一课，但是感觉这节有点晦涩了，只是了解一下。
+平常设置密码的话，edge/chrome倒是有个生成密码的功能，平常注册一些奇奇怪怪的网站会用这个。
+密码管理器倒是也有用过，之前小小体验了一下朋友部署的bitwarden，感觉确实挺不错的，但是没有坚持用下去。
+
+感觉这个加密挺有意思的。关于加密，我记得初中在贴吧找资源的时候，楼主会用`base64`这种编码来加密网址防止伸手党和被和谐。不过这种方式不需要key，很难称得上安全。这里介绍了对称加密与非对称加密，两者的区别应该是是否区分公钥/私钥。
+感觉讲义讲的不是很清楚，这里就找了点自己摘抄的
+
+>对称加密算法
+>特性：
+1、加密、解密使用同一个密钥，效率高
+2、将原始数据分割成固定大小的块，逐个进行加密
+缺陷：
+1、 密钥过多
+2、密钥分发
+3、数据来源无法确认
+>
+
+
+> 非对称加密算法
+公钥加密： 密钥是成对出现
+公钥：公开给所有人； public key
+私钥：自己留存，必须保证其私密性； secret key (private)
+特点：用公钥加密数据，只能使用与之配对的私钥解密；反之亦然
+功能：
+数字签名：主要在于让接收方确认发送方身份
+对称密钥交换：发送方用对方的公钥加密一个对称密钥后发送给对方
+数据加密：适合加密较小数据
+缺点：密钥长， 加密解密效率低下
+>
+```bash
+#这里使用gpg对称加密方法来试了一下
+sakuraauro@DemoJustLuGuo:~$ gpg --gen-key
+（跳过中间的输出）
+Real name: shimarin
+Email address: shimarin3915@gmail.com
+You selected this USER-ID:
+    "shimarin <shimarin3915@gmail.com>"
+    Change (N)ame, (E)mail, or (O)kay/(Q)uit? o
+We need to generate a lot of random bytes. It is a good idea to perform
+some other action (type on the keyboard, move the mouse, utilize the
+disks) during the prime generation; this gives the random number
+generator a better chance to gain enough entropy.
+gpg: /home/sakuraauro/.gnupg/trustdb.gpg: trustdb created
+gpg: directory '/home/sakuraauro/.gnupg/openpgp-revocs.d' created
+gpg: revocation certificate stored as '/home/sakuraauro/.gnupg/openpgp-revocs.d/xxxxxxxxxxxxxxxxxxxxx.rev'
+public and secret key created and signed.
+
+pub   ed25519 2025-01-21 [SC] [expires: 2028-01-21]
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+uid                      shimarin <shimarin3915@gmail.com>
+sub   cv25519 2025-01-21 [E] [expires: 2028-01-21]
+#这里密钥就创建好了
+```
+---
+```bash
+sakuraauro@DemoJustLuGuo:~$ touch hoshimachi.txt
+sakuraauro@DemoJustLuGuo:~$ vim hoshimachi.txt
+彗星のごとく現れたスターの原石！アイドルVtuberの星街すいせいでーす！ すいちゃんは——今日もかわいい！  #这个是txt里面的内容
+sakuraauro@DemoJustLuGuo:~$ gpg --output hoshimachi.gpg --encrypt --recipient shimarin3915@gmail.com hoshimachi.txt
+sakuraauro@DemoJustLuGuo:~$ scp -r hoshimachi.gpg shimarin@192.168.1.5:/home/shimarin
+#这里把这个文件用ssh发送到我的老电脑上
+sakuraauro@DemoJustLuGuo:~$ gpg --export -o new.key xxxxxxxxxxxxxxxxxxxxxxxxx
+#这里通过--list-keys显示的密钥，将该密钥导出为一个叫new.key的文件，接下来用自己喜欢的方式将这个文件发送到老电脑，使用--import导入就可以解密上面的gpg文件了。
+```
+ssh好玩捏，下次还玩🥰🥰🥰
+
+### 01.22
+
+#### 学习时间：45分钟
+
+终于是学习到最后一课了，最后一课所讲的`大杂烩`之中有许多功能我都略有耳闻，但是在学习这一课之前对它们都缺乏一定的了解，今天也算是稍微揭开了它们的庐山真面目。也借最后一课对自己这几天的学习做个小总结。
+
+markdown这个东西算是老生常谈了，包括我们现在写这个学习笔记所用的就是markdown，这种轻量级的标记语言确实让写文档变得赏心悦目，我当初在写笔记的时候用10分钟看了一下markdown的语法，然后在vscode装了一个能预览markdown最终渲染出来的效果的插件，确实对我帮助很大。
+
+docker，这个东西虽然很感兴趣，但是一直没有机会用。docker这种“容器”的概念真的很厉害，将一个应用运行所需的环境打包好后可以直接运行而不需要模拟全部的环境，降低了很多性能开销。我记得很多NAS上就有docker的部署，可以很方便地利用它做很多事情。感觉接下来我能用这东西部署一个QQ机器人，接入音游查询的API，能够使用它查询音游成绩，让CQUT的音游查询bot不再被外面卡脖子（狗头）。
+
+还有说实话，在学习这系列课之前，我都觉得linux对我来说是一个很遥远的东西，而现在我已经会使用linux进行一些东西的部署。（而且wsl除了进图形化界面稍微麻烦一点，就文件可以直接跟windows共享这点真的很嗨好用）
+
+接下来这个The-missing-semester的学习就算是收尾了吧，之后几天应该会更新一些自己新的动向，但是最近还在苦恼到底应该学哪个方向才好。去年因为个人原因荒废了一年，所以不想让自己今年继续摆下去。想做的东西很多很杂，但是目前的最想做的事是做一个街机音游手台，就是还没钱买材料，做的话也得学习焊接，希望我能早日做完这个我画下的大饼吧。想说的东西就是这些，再见！
+
 
 <!-- Content_END -->

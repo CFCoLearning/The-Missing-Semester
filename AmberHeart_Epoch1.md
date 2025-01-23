@@ -740,6 +740,468 @@ SHHis@AmberHeart:~# baibai 疯狂星期四阿贝母鸡卡
 今天就学到这里，疯狂星期四阿贝母鸡卡向各位告辞，各位下次再见捏~
 ```
 
+### 01.17
+#### 学习时长：70min
+远程执行服务器 ssh<br><br>
 
+有关于sed的正则表达式<br><br>
+
+捕获组,指定特殊值并重复使用<br><br>
+
+sort | uniq -c 去除排序后重复行 并计数 感觉挺有用<br><br>
+
+学了不少,不如先找个日志练手，诶,刚好脸上就有个杀戮尖塔的运行日志<br><br>
+
+不过好像看不到具体哪个mod引起的闪退,就用sed的正则表达式让他可视化一下<br><br>
+
+来看看哪个基础mod在杀戮尖塔运行过程中是大头<br><br>
+```bash
+SHHis@AmberHeart:~# cat SlayTheSpire.log
+...#省略上万条
+12:19:10.470 INFO helpers.FileSaver> Save thread will die now.
+12:19:10.470 INFO core.CardCrawlGame> Shutting down publisher integrations...
+12:19:10.473 INFO steam.SteamTicker> [ERROR] SteamAPI stopped running.
+12:19:10.476 INFO core.CardCrawlGame> Flushing logs to disk. Clean shutdown successful.
+
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/'
+#先提取一下具体出现的基础mod
+...
+spireTogether.SpireTogetherMod
+spireTogether.SpireTogetherMod
+spireTogether.SpireTogetherMod
+core.CardCrawlGame
+core.CardCrawlGame
+core.CardCrawlGame
+core.CardCrawlGame
+helpers.FileSaver
+helpers.FileSaver
+core.CardCrawlGame
+steam.SteamTicker
+core.CardCrawlGame
+#大致是提取出来了 虽然有不少乱七八糟的就当没看见吧（
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/' | sort | uniq -c
+#进行一个序的排
+...
+      2 steamInput.SteamInputDetect
+      1 steamInput.SteamInputHelper
+      1 ststwitch.TwitchConfig
+     23 togawasakikomod
+    476 unlock.UnlockTracker
+SHHis@AmberHeart:~# cat SlayTheSpire.log | sed -E 's/.*(INFO | DEBUG )(.*)>.*/\2/' | sort | uniq -c | sort -nk1,1 | tail -n10
+#然后把里面最大头的提取一下
+    163 helpers.TipHelper����
+    242 helpers.TipHelper��ҫ
+    304 dungeons.AbstractDungeon
+    312 ActLikeIt
+    336 helpers.AsyncSaver
+    442 helpers.FileSaver
+    476 unlock.UnlockTracker
+    880 helpers.File
+   3454 basemod.BaseMod
+   4027 spireTogether.SpireTogetherMod
+```
+
+
+### 01.18
+#### 今日学习时长：30min
+
+sleep 有点意思<br><br>
+
+SIGQUIT 退出 这是SIG+单词组的组合？<br><br>
+
+让程序在执行过程中暂停并继续 不过SIGINT似乎可以在执行过程中被检测<br><br>
+
+部分信号如SIGKILL无法被检测 不过注意父子程序关系型可能会报错<br><br>
+
+暂停与后台执行进程 命令+&的后缀让命令在后台运行 可以通过jobs查看目前执行任务<br><br>
+
+nohup的忽略SIGHUP封装来运行程序<br><br>
+
+```bash
+SHHis@AmberHeart:~# sleep 300
+^Z
+[1]+  Stopped                 sleep 300
+SHHis@AmberHeart:~# jobs
+[1]+  Stopped                 sleep 300
+SHHis@AmberHeart:~# bg %1
+[1]+ sleep 300 &
+SHHis@AmberHeart:~# jobs
+[1]+  Running                 sleep 300 &
+SHHis@AmberHeart:~# kill -STOP %1
+SHHis@AmberHeart:~# jobs
+[1]+  Stopped                 sleep 300
+SHHis@AmberHeart:~# fg %1
+sleep 300
+^Z
+[1]+  Stopped                 sleep 300
+SHHis@AmberHeart:~# jobs
+[1]+  Stopped                 sleep 300
+SHHis@AmberHeart:~# kill -SIGHUP %1
+SHHis@AmberHeart:~# jobs
+[1]+  Hangup                  sleep 300
+#大致随便试了下
+```
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai SORRYBUSYseeyounextday海外邮寄好贵啊
+今天就学到这里，SORRYBUSYseeyounextday海外邮寄好贵啊向各位告辞，各位下次再见捏~
+```
+
+### 01.19
+#### 今日学习时长：60min 基本在翻阅
+
+tmux 一个终端多路复用器？相当于浏览器的多标签窗口？<br><br>
+
+在实操过程中或许挺实用,用不断的nohup之类的切进程还挺麻烦的或许<br><br>
+
+```bash
+SHHis@AmberHeart:~# tmux
+[exited]
+SHHis@AmberHeart:~# tmux new -s cometik
+[exited]
+SHHis@AmberHeart:~# tmux ls
+no server running on /tmp/tmux-0/default
+SHHis@AmberHeart:~#
+```
+
+奇怪的是退出后看不到有运行的tmux 或许是文件夹问题？<br><br>
+
+窗口的一些操作也执行不出来 不知道为什么<br><br>
+
+总之tmux之类的大概是相当于可视化操作优化布局了<br><br>
+```bash
+SHHis@AmberHeart:~# alias bb="source baibai.sh | baibai SHHis"
+SHHis@AmberHeart:~# bb
+今天就学到这里，SHHis向各位告辞，各位下次再见捏
+```
+这个alias真的挺有用的 超实用派 包括后面修改配置文件<br><br>
+
+服务器这块,之前尝试弄git终端的时似乎搞过一些有关ssh密钥的<br><br>
+
+感觉这块还是有点糊,可以等以后实操熟悉熟悉<br><br>
+
+粗忙几天 之后就闲下来了估计 我向画像发誓<br><br>
+```bash
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@%@@@@@@@@@@@@@@@@@%%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@%%%%%%%%%%%%%%%%%%%%%%%%#*****#*****###*######*******#####******##%%%%%%%%%%%%%%%%%%%%%%%%%%%%@@@
+@@%%%%%%%%%%%%%%%%%%%%%%%#****##**+**####***#########****####********###%%%%%%%%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%%%%%%%%#****##**++*######***#############***##****#*****##%%%%%%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%%%%%%##***###***+*#######***#####**#######***###***#******##%%%%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%%%%#*****###*****#########**#####***#######***###*++##***#**#%%%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%%%#****#*##*+***##########**######**########*+*####++*##**##*#%%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%%#*#*****##**#############**####*#*+*#*###**#*++*###++*##***###%%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%####*#**##*+*#############*+*######*+*#*##**##*+*####++*##***###%%%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%%#####***##++##*#####*#####*++###**#*++*####**##*+*###*=+*##*+*#*##%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%%######+*##*+*#**#########*#*+*###***#*++*####+*#*++*###+=+###*+*#**%%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%#*####*+*##*+*#+*########**#*+#%###*+*#*=+*###*+*#*=+#*#*==*###*+*#*#%%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%%**#*##++*##*+**+*########**#*+%@%###++*#*=+**##*+*#+=***#*=+*#**++##*#%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%%#*#**#*++###*+**=*#####*##+*#+*@@@%#**++*#*=+***#*+#*++**#*==+**#*+*#**%%%%%%%%%%%%%%@@
+@@%%%%%%%%%%#**#**#*=+###*+*+=*####*##*+**+%@@@@@#*******=+++*#++#*=****+==****++*#*#%%%%%%%%%%%%%%@
+@@%%%%%%%%%%#*##**#*=+###*+*+=####**##++*+#@@@@@@@%****+*+===+**++*++**#*==+****+*#**%%%%%%%%%%%%#%@
+@%%%%%%%%%%%******#*=+*##*++=+###*+*#*+***@@@@@@@@@%*++**+++===+++++=+*#*+==****++##*#%%%%%%%%%%%#%@
+@%#%%%%%%%%#******#*=+*##*+==+***+=*++***%@@@@@@@@@@@%#+****+++=+++===**#+==+****+*#**#%%%%%%%%%%#%@
+@%#%#%%%%#%#********==*###+===**+=+*+*++#@@@@@@@@@@@@@@%#****+++++=====*#*===****+*#**##%%%###%###%@
+@%#######%%#********==****+==**+=+++*++#@@@@@@@@@@@@@@@@@%#****++***++=+#*+==+***+*#*+*####%#%####%@
+@%#%#######**#******==+***+==+==+++*++%@@@@@@@@@@@@@@@@#**+==+=---=*##+=*#+===++*++#*=+*#%########%@
+@%#########**##*****===**#+====+++*++#@@@@@@@@@@@@@@@@%*=-::-=--:::-=+#**#*++=++**=***++*#########%@
+@%#########**##*****===+*#*==++===-==+#%@@@@@@@@@@@@@@**#*++++====++-:=#**#**+=++*+**##+**########%@
+@%#########**##*****==++*#*===::------=*%@@@@@@@@@@@@@@@@%%#*++**+*@#=*%%*#*+*+=+*++*###+**#######%@
+@%#########**###****==++*#*-:-===++===+#%@@@@@@@@@@@@@@@@#**#%%##%%%*%@@%*##*##==*+=**##*+**######%@
+@%#########**###***++=++*#*=*%#%#*++**+#@@@@@@@@@@@@@@@@@@%##%%%#%%%@@@@#%###**+=++=**###*+**#####%@
+@%##########*###*+*++=*+*#**%@#+**#####%@@@@@@@@@@@@@@@@@@@@%%%%%%@@@@@@#%#*#*#*=++=+**####+**####%@
+@%##########**###**+==***##**%@%##%%%#%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%###*##*===+=+**#####****##%@
+@%##########**####*+===**###%%%%%%##%%@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#%@@%*#*===+==***#####****#%@
+@%###########*+###*+===+*#**@@@@@@@@@@@@@@@@@@@@%@@@@@@@@@@@@@@@@@@@@@%*#%#++*#+=====+**######****%@
+@%############***#*+====+#**%@@@@@@@@@@@@@@@@@@@%%@@@@@@@@@@@@@@@@@@@@*===-==+*+======**#######***%@
+@%##############***+====+#*+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%=-======**======+**#######*+#@
+@%################*+====+#*=+#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%+-=======+*=======+**#######*%@
+@%################*++===*#*===*@@@@@@@@@@@@@@@@@@@@@@@@%@@@@@@@@@@@#==========+*+=======***#######%@
+@%################*++===+#*====+%@@@@@@@@@@@@@%%@@@@@%%@@@@@@@@@@%*===========+*========+***######%@
+@%###############**+====+#+======*%@@@@@@@@@@@@@@@@@@@@@@@@@@@@%*=-===========+*+========+***#####%@
+@%###############*+++===+*+========+#%@@@@@@@@@@@@@@@@@@@@@@@%*=-===========++**==========+***####%@
+@%###############*+**===+**===========+*#%@@@@@@@@@@@@@@@@@%##+=============+**+======+=====***###%@
+@%##############*++##++++**==+========---=+*%%@@@@@@@@@@%#####*============+***=======+*+====***##%@
+@%##############*+*#**++++*+==============-=*####%%%%%####%%#%*===========+*##*========+*+====+***%@
+@%#############*++*#**++*****===============#%%#########%%%%%%#=----=====+*###+=========+**=++=+**%@
+@%*############*+*##**+==*#***+=+======-===+#%%%%%%%%%%%%%%@@@%+=++======***##+==========+**+++==+#@
+@%*############*+*##**+==+*##***+=====++***#%%%%%%%%%%%%@@@@@@@%#%@@#+==**+##*+============***+++=#@
+@%*###########*++*#***+===+*##*+++**#@@###%@@@@@@@@@@@@@@@@@@@%@@@@@@@#+*+*##*+=============+***+=#@
+@%*#**#*#*#****++###*********##***#@@@#%@@@@@@@@@@@@@@@@@@@@%%@@@@@@@@%**+*##*+===============+**+#@
+@%*************+*#*++#%##@@#*#####+#@%%%%%%%@@@@@@@%%%%%%%%%@@@@@@@@@@#*##+##**##*++===========+**%@
+@%*************++=-=%%*#@@@#**###@++#@@@@@@@@@@@@%%@@@@%%%@@@@@@@@@@@@#+#*+*#**+===++=============#@
+@%**********#*=-::=%@##@@@#**+**##=*#@@@@@@@@@@@@@@@@%%%@@@@@@@@@@@@@@*=*#*+**+=:::::---==========#@
+@@%#********+-:::-#@*+***+=+====++#%=----==========+#@@@@@@@@@@@@@@@%#+=+##+=+===-:::::::--=====+#@@
+@@@@@%%%%%%%######@@%##########%@@@@#####*********#%@@@@@@@@@@@@@@@@%%%%##%#####%############%%%@@@@
+```
+
+
+### 01.20
+#### 今日学习时长：30min 主要在学git的数据模型底层逻辑
+
+git等,代码上传多人项目合作在线更新历史版本查看什么什么的<br><br>
+
+只要有过基本了解的都能知道其意义非凡和有效程度<br><br>
+
+tree ——>文件夹 blob ——>文件
+
+历史提交记录可以按下图理解↓
+```bash
+o <-- o <-- o <-- o <----  o 
+            ^            /
+             \          v
+              --- o <-- o
+```
+感觉这类指向父辈
+
+类似于给需要储存的信息以一个键的信息储存,然后需要时再根据所需查找?<br><br>
+
+初感略像字典的形式<br><br>
+
+今天还是挺忙的 心怀愧疚的到此为止了<br><br>
+
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai 高山祐介小时候上学变成了空气
+今天就学到这里，高山祐介小时候上学变成了空气向各位告辞，各位下次再见捏~
+```
+
+### 01.21
+#### 今日学习时长：40min
+
+对象不可改变 引用可改变 毕竟不可改变哈希值<br><br>
+
+巧妙的使用git add和git commit暂存区 有效避免文件赘余<br><br>
+
+git这个暂存区的设计还有log之类的可视化做的也太直观伟大了<br><br>
+
+查看历史哈希值之类的切换真的挺方便有效的<br><br>
+
+没什么内容塞点今天的实操吧<br><br>
+```bash
+SHHis@AmberHeart:~# mkdir luka
+SHHis@AmberHeart:~# cd luka
+SHHis@AmberHeart:~/luka# ls
+SHHis@AmberHeart:~/luka# git init
+Initialized empty Git repository in /root/luka/.git/
+SHHis@AmberHeart:~/luka# ls
+SHHis@AmberHeart:~/luka# ls -a
+.  ..  .git
+SHHis@AmberHeart:~/luka# ls .git
+HEAD  branches  config  description  hooks  info  objects  refs
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+SHHis@AmberHeart:~/luka# echo "kami baka" > luka.txt
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        luka.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+SHHis@AmberHeart:~/luka# git add luka.txt
+SHHis@AmberHeart:~/luka# git status
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   luka.txt
+
+[master (root-commit) fd751ab] luka first show
+ Committer: root <root@AmberHeart>lose the file...
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 1 insertion(+)
+ create mode 100644 luka.txt
+SHHis@AmberHeart:~/luka# git log
+commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2 (HEAD -> master)
+Author: root <root@AmberHeart>
+Date:   Tue Jan 21 02:23:22 2025 +0800
+
+    luka first show
+SHHis@AmberHeart:~/luka# git cat-file -p fd751ab
+tree fce2bd3e00c7e407d79e7632c5d20ffb7284e613
+author root <root@AmberHeart> 1737397402 +0800
+committer root <root@AmberHeart> 1737397402 +0800
+
+luka first show
+SHHis@AmberHeart:~/luka# git cat-file -p fce2bd3e00c7e407d79e7632c5d20ffb7284e613
+100644 blob d950e40352d9a77c520b0fbb39a994653f4fe052    luka.txt
+SHHis@AmberHeart:~/luka# git cat-file -p d950e40352d9a77c520b0fbb39a994653f4fe052
+kami baka
+SHHis@AmberHeart:~/luka#
+```
+最近还是忙 等AE做完转场和过场的特效就闲下来了
+
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai 全神人队
+今天就学到这里，全神人队向各位告辞，各位下次再见捏~
+```
+
+### 01.22
+#### 今日学习时长：60min
+
+用brunch定义分支指针名字,可以随更新调整指针位置,做到不同分支的跳跃<br><br>
+
+git diff 区别 git checkout 切换分支指针 git merge 合并<br><br>
+
+正确的解决合并冲突 
+
+```bash
+#例如下列整出了一个分支
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+* commit b38f5da41a7c3d283f39a971021710a52447a16f (HEAD -> luka)
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|     luka update
+|
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:30:20 2025 +0800
+|
+|       luka gogogo
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+
+      luka first show
+```
+然后便是尝试通过merge整合两个不同的分支上的文件<br><br>
+
+实操如下<br><br>
+```bash
+SHHis@AmberHeart:~/luka# git merge master
+Auto-merging luka.sh
+CONFLICT (content): Merge conflict in luka.sh
+Automatic merge failed; fix conflicts and then commit the result.
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+* commit b38f5da41a7c3d283f39a971021710a52447a16f (HEAD -> luka)
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|     luka update
+|
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:30:20 2025 +0800
+|
+|       luka gogogo
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+
+      luka first show
+SHHis@AmberHeart:~/luka# git merge --continue
+U       luka.sh
+error: Committing is not possible because you have unmerged files.
+hint: Fix them up in the work tree, and then use 'git add/rm <file>'
+hint: as appropriate to mark resolution and make a commit.
+fatal: Exiting because of an unresolved conflict.
+SHHis@AmberHeart:~/luka# git add luka.sh
+SHHis@AmberHeart:~/luka# git commit
+[luka 6825925] Merge branch 'master' into luka luka rebirth
+ Committer: root <root@AmberHeart>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+SHHis@AmberHeart:~/luka# git log --all --graph --decorate
+*   commit 682592531084ad222bcd262720d70e102704f26b (HEAD -> luka)
+|\  Merge: b38f5da b8075e0
+| | Author: root <root@AmberHeart>
+| | Date:   Wed Jan 22 03:43:43 2025 +0800
+| |
+| |     Merge branch 'master' into luka
+| |     luka rebirth
+| |
+| * commit b8075e0a6cdc8d8728bb41de00948712218e1f5f (master)
+| | Author: root <root@AmberHeart>
+| | Date:   Wed Jan 22 03:30:20 2025 +0800
+| |
+| |     luka gogogo
+| |
+* | commit b38f5da41a7c3d283f39a971021710a52447a16f
+|/  Author: root <root@AmberHeart>
+|   Date:   Wed Jan 22 03:36:01 2025 +0800
+|
+|       luka update
+|
+* commit 956458f74516021c780542c0ab050b4ff5eeade6
+| Author: root <root@AmberHeart>
+| Date:   Wed Jan 22 03:08:12 2025 +0800
+|
+|     lukachang
+|
+* commit fd751ab1e60651f69d1e53ee1694ae8f4b9f96b2
+  Author: root <root@AmberHeart>
+  Date:   Tue Jan 21 02:23:22 2025 +0800
+:
+#成功合并为单一快照、
+SHHis@AmberHeart:~/luka# source luka.sh
+lukachang
+lukachang
+-bash: luka.sh: line 3: syntax error near unexpected token `<<<'
+-bash: luka.sh: line 3: `<<<<<<< HEAD'
+SHHis@AmberHeart:~/luka# vim luka.sh
+echo lukachang
+echo lukachang
+<<<<<<< HEAD
+echo 何？
+=======
+echo nani
+>>>>>>> master
+#不过由于强行合并 此时是有冲突的 以冲突标记标记了出来 需要修改一下
+```
+git远程交互的命令有点多 实际上手后应该会熟悉很多<br><br>
+
+后面可以试试pro git和远程搭建一下github之类的 得等闲下来<br><br>
+
+```bash
+SHHis@AmberHeart:~# source baibai.sh
+SHHis@AmberHeart:~# baibai 萝萨莉亚我来找你啦
+今天就学到这里，萝萨莉亚我来找你啦向各位告辞，各位下次再见捏~
+```
 
 <!-- Content_END -->

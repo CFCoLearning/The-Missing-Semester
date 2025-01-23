@@ -160,7 +160,7 @@ echo "Standard Error was saved to $error_file"
 
 Study Time: 2h.
 
-### Note
+#### Note
 
 Today I mainly experienced the use of nvim plugin in VS code.
 
@@ -169,6 +169,52 @@ Vim is a deeply customizable editor with very powerful functions.You don't need 
 > Vim avoids the use of the mouse, because it’s too slow; Vim even avoids using the arrow keys because it requires too much movement.The end result is an editor that can match the speed at which you think.
 
 I have to admit that this is right.Using the mouse to position is waste of time, we can be faster by only use keyboard.However, in actual project development, it is obviously inappropriate to only use vVm for code editing. We still need an IDE to help us complete project development.So I think using Vim through a plugin in VS code to complete a project is a more appropriate solution.This can not only complete project development easier, but also improve our code editing efficiency and experience.
+
+### 01.18
+
+Study Time: 1h
+
+#### Note
+
+Today I mainly learned how to use awk, sed and grep.
+
+Awk is an application for processing text files. Almost all Linux systems come with this program.It processes each line of the file in turn and reads each field in it. For text files with the same format for each line, such as logs and CSV, awk may be the most convenient tool.Awk is not only a tool software, but also a programming language.
+
+Sed is a stream editor. It is a very important tool in text processing and can be used perfectly with regular expressions. When processing, the current line is stored in a temporary buffer, called the "pattern space". Then the sed command is used to process the contents of the buffer. After the processing is completed, the contents of the buffer are sent to the screen. Then the next line is processed, and this is repeated until the end of the file. The file content does not change unless you use redirection storage output. Sed is mainly used to automatically edit one or more files; simplify repeated operations on files; write conversion programs, etc.
+
+grep (global search regular expression (RE) and print out the line) is a powerful text search tool that can use regular expressions to search text and print out matching lines. It is used to filter/search for specific characters. Regular expressions can be used with a variety of commands, making it very flexible to use.
+
+Proficient use of these three tools can meet most data processing needs.
+
+### 01.20
+
+Study Time: 2h
+
+#### Note
+
+Shell is using a UNIX communication mechanism called a *signal* to communicate information to the process. When a process receives a signal it stops its execution, deals with the signal and potentially changes the flow of execution based on the information that the signal delivered. For this reason, signals are *software interrupts*.
+
+It can become tiresome typing long commands that involve many flags or verbose options. For this reason, most shells support *aliasing*. A shell alias is a short form for another command that your shell will replace automatically for you.
+
+Many programs are configured using plain-text files known as *dotfiles*.Shells are one example of programs configured with such files. On startup, your shell will read many files to load its configuration. Depending on the shell, whether you are starting a login and/or interactive the entire process can be quite complex.
+
+The Secure Shell (SSH) protocol is a method for securely sending commands to a computer over an insecure network. SSH uses cryptography to authenticate and encrypt the connection between devices. SSH also enables tunneling or port forwarding, which is when packets of data can traverse a network that they would not otherwise be able to traverse. SSH is commonly used to remotely control servers, manage infrastructure, and transfer files.
+
+Remote encrypted connection: SSH establishes a connection between a user's device and a distant machine (usually a server). It uses encryption technology to scramble the data that passes through the connection. An intercepting party would only find something like static data - random data that is meaningless unless it is decrypted.
+
+Tunneling: In networking, tunneling is a method of moving packets of data across a network using protocols or paths that would not normally be used. Tunneling works by wrapping a packet of data with additional information (called a header), thereby changing its destination. SSH tunneling uses a technique called port forwarding to send packets from one machine to another.
+
+### 1.21
+
+Study Time: 1h.
+
+#### Note
+
+Version control systems (VCSs) are tools used to track changes to source code (or other collections of files and folders). As the name implies, these tools help maintain a history of changes; furthermore, they facilitate collaboration. VCSs track changes to a folder and its contents in a series of snapshots, where each snapshot encapsulates the entire state of files/folders within a top-level directory. VCSs also maintain metadata like who created each snapshot, messages associated with each snapshot, and so on.
+
+While other VCSs exist, `Git` is the de facto standard for version control.Git is an open source distributed version control system that can effectively and quickly handle version management of projects from very small to very large.
+
+The general process of using `Git` is to use `git pull` to pull code from the remote repository, use `git commit` to commit the changes, and then use `git push` to push updates to the remote repository.
 
 
 

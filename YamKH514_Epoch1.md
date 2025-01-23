@@ -388,4 +388,11 @@ What did I learn today: Metaprogramming
 
 看完了讲义，感觉没有太多可写的，今天就摸了😴
 
+### 01.23
+
+Duration of study:  20min\
+What did I learn today: Security and Cryptography
+
+把密码学简单看了一下，最近摸的有点多 ╯︿╰
+
 <!-- Content_END -->

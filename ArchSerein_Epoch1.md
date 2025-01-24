@@ -288,4 +288,121 @@ struct buf {
 
 > 状态转换混乱, 数据传递过程不清晰，时序惨不忍睹，甚至仿真环境的 DPI-C 函数会 coredump。
 
+### 01.24
+
+> 今日学习时长
+
+> 4h
+
+> 今日学习人任务
+
+> 实现 psram 的仿真模型，添加 qspi mode 切换到 qpi mode 的逻辑
+
+> 学习内容小结
+
+> 状态机还是时序逻辑实现，不过将 psram_read 和 psram_write 的逻辑改成了组合逻辑, 根据 counter 计数值的值和 state 判断是否需要读/写。
+``` verilog
+module psram(
+  input sck,
+  input ce_n,
+  inout [3:0] dio
+);
+
+  localparam CMD    = 2'b00;
+  localparam ADDR   = 2'b01;
+  localparam READ   = 2'b10;
+  localparam WRITE  = 2'b11;
+  import "DPI-C" function void psram_read(input int raddr, output int rdata);
+  import "DPI-C" function void psram_write(input int waddr, input byte wdata);
+  wire   ce;
+  wire   [31:0] rdata;
+  wire   [ 7:0] wdata;
+  reg           wait_read;
+  reg    [ 7:0] cmd;
+  reg    [23:0] addr;
+  reg    [31:0] data;
+  reg    [ 2:0] counter;
+  reg    [ 1:0] state;
+  always @(posedge sck or posedge ce_n) begin
+    if (!ce) begin
+      state <= CMD;
+      counter <= 3'h0;
+      data <= 32'h0;
+      wait_read <= 1'b1;
+    end else begin
+      case (state)
+        CMD: begin
+          cmd <= {cmd[6:0], dio[0]};
+          if (counter == 3'h7) begin
+            counter <= 3'h0;
+            state <= ADDR;
+          end else begin
+            counter <= counter + 1;
+          end
+        end
+        ADDR: begin
+          addr <= {addr[19:0], dio};
+          if (counter == 3'h5) begin
+            counter <= 3'h0;
+            state <= (cmd == 8'h38 ? WRITE : READ);
+          end else begin
+            counter <= counter + 1;
+          end
+        end
+        READ: begin
+          if (wait_read) begin
+            if (counter == 3'h6) begin
+              data <= rdata;
+              wait_read <= 1'b0;
+              counter <= 3'h0;
+            end else begin
+              counter <= counter + 1;
+            end
+          end else begin
+            if (counter == 3'h1) begin
+              data <= {8'h0, data[31:8]};
+              counter <= 3'h0;
+            end else begin
+              counter <= counter + 1;
+            end
+          end
+        end
+        WRITE: begin
+          if (counter == 3'h2) begin
+            data <= {data[27:0], dio};
+            addr <= addr + 1;
+            counter <= 3'h1;
+          end else begin
+            data <= {data[27:0], dio};
+            counter <= counter + 1;
+          end
+        end
+      endcase
+    end
+  end
+  always @(counter) begin
+    if (state == WRITE && counter == 3'h2) begin
+      psram_write({8'h0, addr}, wdata);
+    end
+  end
+
+  always @(counter) begin
+    if (state == READ && counter == 3'h5) begin
+      psram_read({8'h0, addr}, rdata);
+    end
+  end
+
+  assign ce = ~ce_n;
+  assign wdata = data[7:0];
+  assign dio =  (state == READ) ? 
+                (counter == 3'h0 ? data[7:4] : data[3:0]) :
+                4'bz;
+endmodule
+
+// 还需要注意数据输入输出的顺序，将读取的数据通过 dio 输出时顺序是低字节到高字节，每个字节的顺序是从高位到低位
+// 由于写数据的长度是不定的，sck 信号只会在有数据传输时更新，所以每通过 dio 拿到一个字节的数据后都会通过  psram_write 将数据写到 psram 中，如果在这个期间还有 sck 信号，状态机也可以继续接收数据。
+```
+
+> 对于 qspi mode 到 qpi mode 切换还在改控制器
+
 <!-- Content_END -->

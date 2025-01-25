@@ -269,4 +269,171 @@ LangChain 记忆组件的流程图如下：
 #####  缓解推理相关幻觉
 - **增强事实性解码**：动态调整解码策略，利用模型内部结构引导事实性回答。
 - **增强忠实度解码**：通过上下文和逻辑一致性策略，确保模型输出与用户指令或上下文保持一致。
+
+#### 1.25
+#### awk
+AWK 是一种处理文本文件的语言,是一个强大的文本分析工具。
+##### 语法
+```
+awk '{pattern + action}' {filenames}
+```
+**pattern** 表示 AWK 在数据中查找的内容，而 action 是在找到匹配内容时所执行的一系列命令，action{}可以有多个语句，以;号隔开。</br>
+通常，awk是以文件的一行为处理单位的。awk每接收文件的一行，然后执行相应的命令，来处理文本。</br>
+例：
+```
+awk -F":" '{ print "username: " $1 "\t\tuid:" $3" }' /etc/passwd
+```
+> -F参数：指定分隔符，可指定一个或多个(-F '[ ,]+' ')。print 后面做字符串的拼接。
+
+##### 例
+**只查看test.txt文件（100行）内第20到第30行的内容**
+```
+awk '{if(NR>=20 && NR<=30) print $1}' test.txt
+```
+awk 在开始处理输入文件之前会执行 BEGIN 块，因此它是初始化 FS（字段分隔符）变量、打印页眉或初始化其它在程序中以后会引用的全局变量的极佳位置。
+awk 还提供了另一个特殊块，叫作 END 块。 awk 在处理了输入文件中的所有行之后执行这个块。通常， END 块用于执行最终计算或打印应该出现在输出流结尾的摘要信息。
+
+**统计/etc/passwd的账户人数**
+```
+awk 'BEGIN {count=0;print "[start] user count is ",count} {count++;print $0;} END{print "user count is ",count}' passwd
+```
+
+**统计某个文件夹下的文件占用的字节数**
+```
+ll |awk 'BEGIN{size=0;} {size=size+$5;} END{print "[end]size is ",size/1024/1024,"M"}'
+```
+
+内置变量
+
+
+
+awk 'BEGIN{FS="\t+"}{print $1,$2,$3}' tab.txt
+
+FS="\t" 一个或多个 Tab 分隔
+awk -F [[:space:]+] '{print $1,$2}' space.txt
+
+FS="[[:space:]+]" 一个或多个空白空格，默认的
+awk -F "[ :]"+ '{print $1,$2,$3}'
+
+FS="[" ,:"]+" 以一个或多个空格或：或，分隔
+ifconfig eth0|awk -F "[ :]"+ 'NR==2{print $4}'
+
+
+
+##### awk表达式
+
+**正则表达式**
+```
+awk '/REG/{action} ' file
+```
+> `/REG/` 为正则表达式，可以将$0 中，满足条件的记录送入到：action 进行处理
+```
+awk -F: '$5~/root/{print $0}' passwd  ## 以分号作为分隔符，匹配第5个字段是root的行
+```
+**布尔表达式**
+```
+awk '布尔表达式{action}' file
+```
+仅当对前面的布尔表达式求值为真时， awk 才执行代码块。
+
+##### awk 的 if、循环和数组
+**条件语句**
+```
+{
+        if ($1=="foo"){
+                if($2=="foo"){
+                        print "uno"
+                }else{
+                        print "one"
+                }
+        }elseif($1=="bar"){
+                print "two"
+        }else{
+                print "three"
+        }
+}
+```
+**循环**
+```
+{
+    count=1do {
+        print "I get printed at least once no matter what"
+    } while ( count !=1 )
+}
+```
+**break&continue**
+```
+x=1while (1) {
+        if ( x==4 ) {
+        x++
+        continue
+    }
+    print "iteration", x
+    if ( x>20 ) {
+        break
+    }
+    x++
+}
+```
+**数组**
+> AWK 中的数组都是关联数组,数字索引也会转变为字符串索引
+```
+netstat -an|awk '/^tcp/{++s[$NF]}END{for(a in s)print a,s[a]}'
+```
+##### awk函数
+**常用字符串函数**
+![awk](https://heap.crazyfay.com/uploads/1737813234.jpg)
+
+##### 函数应用
+**替换**
+
+在 info 中查找满足正则表达式， /[0-9]+/ 用”!”替换，并且替换后的值
+```
+awk 'BEGIN{info="this is a test2010test!";gsub(/[0-9]+/,"!",info);print info}'
+# 输出 this is a test!test!
+```
+
+**查找**
+```
+awk 'BEGIN{info="this is a test2010test!";print index(info,"test")?"ok":"no found";}'
+# 输出：ok
+```
+
+**匹配查找**
+
+如果查找到数字则匹配成功返回 ok，否则失败，返回未找到
+```
+awk 'BEGIN{info="this is a test2010test!";print match(info,/[0-9]+/)?"ok":"no found";}'
+
+# 输出：ok
+```
+**截取**
+从第4个字符开始，截取10个长度字符串
+```
+awk 'BEGIN{info="this is a test2010test!";print substr(info,4,10);}'
+# 输出：s is a tes 
+```
+**分割**
+
+分割 info,动态创建数组 tA，`awk for in` 循环，是一个无序的循环。返回结果的下标从1开始
+```
+awk 'BEGIN{info="this is a test";split(info,tA," ");print length(tA);for(k in tA){print k,tA[k];}}' 4
+# 输出： 4 test 1 this 2 is 3 a
+```
+
+
+**统计avg**
+```
+ grep "1000082-1" audit.log.2021060309* | grep -o  "lal_upgrade_tag_num\[[0-9][0-9]*\]"  | awk '{split($1,a,"\\[");split(a[2],b,"\\]");print b[1];}' | awk '{sum+=$1}END{print sum/NR}'
+```
+
+**格式化输出**
+```
+cat ./top_cmatch | awk '{printf("    WHEN array_contains(cmatchs, %d) THEN \047%d\047\n", $0, $0)}'
+```
+
+**数组统计**
+```
+echo "1024 28021,2048 25814,3072 16965,5120 30528,8192 42236,10752 27597,14848 32218,20224 39352,27648 45789,37760 97128,51584 62913,70464 12515,96256 1148,262144 512" | awk '{split($0,tA,",");for(k in tA){print tA[k];}}' | awk '{split($0,tA," "); print (tA[1]tA[2])/(10241024);}' | awk '{sum+=$1}END{print sum/(NR)}'
+```
 <!-- Content_END -->

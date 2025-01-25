@@ -395,4 +395,70 @@ What did I learn today: Security and Cryptography
 
 把密码学简单看了一下，最近摸的有点多 ╯︿╰
 
+### 01.25
+
+Duration of study:  30min\
+What did I learn today: Tailscale ACL 配置
+
+[Manage permissions using ACLs](https://tailscale.com/kb/1018/acls)
+
+Tailscale, 用来进行虚拟局域网组网的工具。我在学校内网跑着一个Emby的服务器，为解决外网访问，尝试了一圈虚拟局域网的工具，最后发现还是tailscale效果最佳。
+到目前为止，共有9台设备在这一局域网中。我希望在将家中路由加入进来的同时不会被其他设备访问，这时候就需要修改Tailscale的ACL了。
+下方就是配置完后的ACL文件。
+```json
+{
+	"hosts": {
+		"embyServer": "a.b.c.d",    // 给IP地址定义一个主机名，提高ACL的可读性
+	},
+
+	// Declare static groups of users. Use autogroups for all users or users with a specific role.
+	"groups": {
+		"group:users": ["a@gmail.com", "b@gmail.com", "c@gmail.com"],   //将三个成员分至users组
+	},
+
+	// Define the tags which can be applied to devices and by which users.
+	"tagOwners": {
+		"tag:user":           ["group:users"],  // users组可以分配的tags
+		"tag:embyServer":     ["group:users"],
+		"tag:privateGateway": ["group:users"],
+	},
+
+	// Define access control lists for users, groups, autogroups, tags,
+	// Tailscale IP addresses, and subnet ranges.
+	"acls": [
+		// Allow all connections.
+		// Comment this section out if you want to define specific restrictions.
+		{
+			"action": "accept", //具体ACL规则
+			"src":    ["*"],
+			"dst":    ["embyServer:*"],
+		},
+		{
+			"action": "accept",
+			"src":    ["tag:user"],
+			"dst":    ["tag:user:*"],
+		},
+
+		// Allow users in "group:example" to access "tag:example", but only from
+		// devices that are running macOS and have enabled Tailscale client auto-updating.
+		// {"action": "accept", "src": ["group:example"], "dst": ["tag:example:*"], "srcPosture":["posture:autoUpdateMac"]},
+	],
+
+	// Define users and devices that can use Tailscale SSH.
+	"ssh": [
+		// Allow all users to SSH into their own devices in check mode.
+		// Comment this section out if you want to define specific restrictions.
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+	],
+}
+```
+Tailscale的ACL规则采用的是白名单的过滤器模式，目前实现的效果，所有机器可访问Emby，Emby不可访问其他任何机器，user标签下的所有机器可以互访，所有机器无法访问这个虚拟局域网中加入的路由器。
+我尝试配置过允许相同账号下的机器互访，但由于事先配置了所有机器的Tag，导致规则不起作用，而删除Tag的操作又比较麻烦，故选择了一个折中的方案，允许user标签的机器均可以互访。
+后续可能还会在学习一下ACL配置的门门道道。
+
 <!-- Content_END -->

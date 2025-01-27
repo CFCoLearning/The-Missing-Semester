@@ -1,10 +1,10 @@
 name: Repo Management
 
 on:
-  pull_request_target:
-    types: [closed]
-  schedule:
-    - cron: "0 0 * * *" # 每天午夜运行
+  # pull_request_target:
+  #   types: [closed]
+  # schedule:
+  #   - cron: "0 0 * * *" # 每天午夜运行
   push:
     branches: [main] # 每次推送到main分支时也运行
 
@@ -126,15 +126,15 @@ jobs:
           git commit -m "Update commit status table"
           git push
 
-      - name: Notify server
-        if: github.event_name == 'push'
-        env:
-          SERVER_URL: ${{ secrets.SERVER_URL }}
-        run: |
-          REPO_NAME=$(echo "${{ github.repository }}" | awk -F '/' '{print $2}')
-          curl -X POST $SERVER_URL/trigger \
-            -H "Content-Type: application/json" \
-            -d "{
-              \"username\": \"${{ github.actor }}\",
-              \"repository\": \"$REPO_NAME\"
-            }"
+      # - name: Notify server
+      #   if: github.event_name == 'push'
+      #   env:
+      #     SERVER_URL: ${{ secrets.SERVER_URL }}
+      #   run: |
+      #     REPO_NAME=$(echo "${{ github.repository }}" | awk -F '/' '{print $2}')
+      #     curl -X POST $SERVER_URL/trigger \
+      #       -H "Content-Type: application/json" \
+      #       -d "{
+      #         \"username\": \"${{ github.actor }}\",
+      #         \"repository\": \"$REPO_NAME\"
+      #       }"
